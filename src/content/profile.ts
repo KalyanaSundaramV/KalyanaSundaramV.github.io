@@ -6,7 +6,7 @@ export const profile: Profile = {
   location: "Bengaluru, Karnataka, India",
   email: "kalyan.wired@gmail.com",
   resumePdfHref: "/resume/Kalyana_Sundaram_V_Resume_Public.pdf",
-  extendedResumePdfHref: "/resume/Kalyana_Sundaram_V_Extended_CV_Public.pdf",
+  extendedResumePdfHref: null,
   summary:
     "I build gameplay systems, rapid prototypes, Unity production pipelines, and practical Windows and Android tools across Unity, C#, Cocos Creator, TypeScript, and .NET.",
   about:
