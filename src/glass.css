@@ -4887,3 +4887,153 @@ input:focus-visible,
     transform: none;
   }
 }
+
+/* ── Borderless, uniform surface ─────────────────────────────────────────
+   One flat animated aurora behind everything. Panels are separated by
+   material and shadow, never by a stroke. Colour-only so box sizes stay put.
+   ponytail: blanket !important instead of editing ~370 border rules; delete
+   the dead border declarations when the stylesheets are next consolidated. */
+:root {
+  --glass-ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+  --page-base: #eef1f7;
+  --aurora-a: rgb(130 186 255 / 0.42);
+  --aurora-b: rgb(208 149 255 / 0.32);
+  --aurora-c: rgb(255 167 196 / 0.28);
+  --glass-highlight: transparent;
+}
+
+:root[data-theme="dark"] {
+  --page-base: #070a14;
+  --aurora-a: rgb(40 103 194 / 0.36);
+  --aurora-b: rgb(106 63 174 / 0.34);
+  --aurora-c: rgb(177 74 119 / 0.22);
+  --glass-highlight: transparent;
+}
+
+*,
+*::before,
+*::after {
+  border-color: transparent !important;
+}
+
+.page-cursor i {
+  border-color: rgb(145 187 255 / 0.8) !important;
+}
+
+.page-cursor[data-mode="demo"] i {
+  border-color: #ff9c5b !important;
+}
+
+.layered-glass::after,
+.lab-keyboard-help kbd {
+  box-shadow: none;
+}
+
+.layered-glass,
+.demo-poster-card,
+.case-study-dialog,
+.quick-look-popover {
+  box-shadow: var(--glass-shadow-soft);
+}
+
+body::before,
+.page-section::before {
+  display: none;
+}
+
+.portfolio-page,
+:root[data-theme="dark"] .portfolio-page {
+  background-color: var(--page-base);
+  background-image: none;
+}
+
+/* Compositor-only drift: the gradient layer is oversized and transformed, so
+   nothing repaints and the glass panels above it only re-sample. */
+.portfolio-page::before {
+  position: fixed;
+  inset: -30%;
+  z-index: -1;
+  background:
+    radial-gradient(40% 40% at 20% 25%, var(--aurora-a), transparent),
+    radial-gradient(38% 38% at 80% 30%, var(--aurora-b), transparent),
+    radial-gradient(42% 42% at 55% 80%, var(--aurora-c), transparent);
+  content: "";
+  pointer-events: none;
+  animation: aurora-drift 48s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes aurora-drift {
+  from {
+    transform: translate3d(-3%, -2%, 0) rotate(0deg) scale(1);
+  }
+  to {
+    transform: translate3d(3%, 3%, 0) rotate(12deg) scale(1.08);
+  }
+}
+
+/* ── Popups: enter on mount, exit before unmount ──────────────────────── */
+.quick-look-popover {
+  opacity: 1;
+  transform: none;
+  animation: none;
+  transition:
+    opacity 160ms var(--glass-ease),
+    transform 160ms var(--glass-ease);
+}
+
+.quick-look-popover[data-state="closed"] {
+  opacity: 0;
+  transform: scale(0.97);
+  transition-duration: 110ms;
+  pointer-events: none;
+}
+
+.case-study-modal {
+  opacity: 1;
+  transition: opacity 240ms var(--glass-ease);
+}
+
+.case-study-dialog {
+  transition: transform 360ms var(--glass-ease-sheet);
+}
+
+.case-study-modal[data-open="false"] {
+  opacity: 0;
+  pointer-events: none;
+  transition-duration: 180ms;
+}
+
+.case-study-modal[data-open="false"] .case-study-dialog {
+  transform: translateY(20px) scale(0.98);
+  transition-duration: 180ms;
+  transition-timing-function: var(--glass-ease);
+}
+
+@starting-style {
+  .quick-look-popover {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+
+  .case-study-modal[data-open="true"] {
+    opacity: 0;
+  }
+
+  .case-study-modal[data-open="true"] .case-study-dialog {
+    transform: translateY(32px) scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-page::before {
+    animation: none;
+  }
+
+  @starting-style {
+    .quick-look-popover,
+    .case-study-modal[data-open="true"] .case-study-dialog {
+      transform: none;
+    }
+  }
+}

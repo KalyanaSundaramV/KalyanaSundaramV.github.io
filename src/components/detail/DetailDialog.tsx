@@ -4,6 +4,7 @@ import {
   PortfolioArtwork,
   ProjectArtwork,
 } from "@/components/art/PortfolioArtwork";
+import { useExitPresence } from "@/hooks/useExitPresence";
 import { createDetailViewModel, type ActiveDetail } from "@/lib/detail";
 
 type DetailDialogProps = {
@@ -11,7 +12,13 @@ type DetailDialogProps = {
   onClose: () => void;
 };
 
-export function DetailDialog({ activeDetail, onClose }: DetailDialogProps) {
+export function DetailDialog({
+  activeDetail: open,
+  onClose,
+}: DetailDialogProps) {
+  // Stays mounted for the exit transition; the scroll lock below follows the
+  // mounted detail so the page does not shift under the fading backdrop.
+  const [activeDetail, leaving] = useExitPresence(open, 200);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const model = useMemo(
@@ -35,13 +42,13 @@ export function DetailDialog({ activeDetail, onClose }: DetailDialogProps) {
   }, [activeDetail]);
 
   useEffect(() => {
-    if (!activeDetail) return;
+    if (!open) return;
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [activeDetail, onClose]);
+  }, [open, onClose]);
 
   if (!activeDetail || !model) return null;
 
@@ -66,8 +73,9 @@ export function DetailDialog({ activeDetail, onClose }: DetailDialogProps) {
 
   return (
     <div
+      key={`${activeDetail.kind}-${activeDetail.item.slug}`}
       className="case-study-modal"
-      data-open="true"
+      data-open={leaving ? "false" : "true"}
       onPointerDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}

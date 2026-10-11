@@ -163,7 +163,7 @@ test("keeps the portfolio content and adds the interactive destruction experienc
   assert.match(app, /className="shipped-work"/);
   assert.match(
     quickLook,
-    /role=\{state\.mode === "mobile" \? "dialog" : "tooltip"\}/,
+    /role=\{shown\.mode === "mobile" \? "dialog" : "tooltip"\}/,
   );
   assert.match(quickLook, /window\.innerHeight - measuredHeight/);
   assert.match(quickLook, /event\.stopPropagation\(\)/);

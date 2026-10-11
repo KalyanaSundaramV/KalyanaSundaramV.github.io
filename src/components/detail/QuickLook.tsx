@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Info, X } from "lucide-react";
 import { PortfolioArtwork } from "@/components/art/PortfolioArtwork";
+import { useExitPresence } from "@/hooks/useExitPresence";
 import { createQuickLookViewModel, type ActiveDetail } from "@/lib/detail";
 
 export type QuickLookState = {
@@ -46,9 +47,11 @@ type Position = {
   left: number;
   top: number;
   width: number;
+  origin: string;
 };
 
 const edge = 14;
+const exitMs = 120;
 
 export function QuickLook({
   state,
@@ -62,32 +65,37 @@ export function QuickLook({
     left: edge,
     top: edge,
     width: 320,
+    origin: "0 0",
   });
+  const [shown, leaving] = useExitPresence(state, exitMs);
   const model = useMemo(
-    () => (state ? createQuickLookViewModel(state.detail) : null),
-    [state],
+    () => (shown ? createQuickLookViewModel(shown.detail) : null),
+    [shown],
   );
 
   useLayoutEffect(() => {
-    if (!state || !popoverRef.current) return;
+    if (!shown || !popoverRef.current) return;
     const update = () => {
-      const anchor = state.anchor.getBoundingClientRect();
-      const popover = popoverRef.current?.getBoundingClientRect();
+      const anchor = shown.anchor.getBoundingClientRect();
+      const popover = popoverRef.current;
       if (!popover) return;
-      if (state.mode === "mobile") {
+      // offsetHeight ignores the enter transform; getBoundingClientRect would
+      // measure the popover mid-scale.
+      if (shown.mode === "mobile") {
         const width = Math.min(420, window.innerWidth - edge * 2);
         const availableHeight = window.innerHeight - edge * 2;
-        const measuredHeight = Math.min(popover.height, availableHeight);
+        const measuredHeight = Math.min(popover.offsetHeight, availableHeight);
         setPosition({
           left: Math.max(edge, (window.innerWidth - width) / 2),
           top: Math.max(edge, (window.innerHeight - measuredHeight) / 2),
           width,
+          origin: "50% 50%",
         });
         return;
       }
 
       const width = Math.min(340, window.innerWidth - edge * 2);
-      const height = popover.height;
+      const height = popover.offsetHeight;
       let left = anchor.right + 12;
       let top = anchor.top;
       if (left + width > window.innerWidth - edge) {
@@ -104,7 +112,17 @@ export function QuickLook({
         }
       }
       top = Math.min(window.innerHeight - height - edge, Math.max(edge, top));
-      setPosition({ left, top, width });
+      // Grow out of the card: pin the scale origin to the anchor's centre,
+      // clamped onto the popover's own box.
+      const originX = Math.min(
+        width,
+        Math.max(0, anchor.left + anchor.width / 2 - left),
+      );
+      const originY = Math.min(
+        height,
+        Math.max(0, anchor.top + anchor.height / 2 - top),
+      );
+      setPosition({ left, top, width, origin: `${originX}px ${originY}px` });
     };
 
     update();
@@ -116,7 +134,7 @@ export function QuickLook({
       window.removeEventListener("resize", update);
       window.removeEventListener("scroll", update, true);
     };
-  }, [state]);
+  }, [shown]);
 
   useEffect(() => {
     if (!state) return;
@@ -143,24 +161,31 @@ export function QuickLook({
     };
   }, [onClose, state]);
 
-  if (!state || !model) return null;
+  if (!shown || !model) return null;
 
   return createPortal(
     <div
+      key={model.id}
       ref={popoverRef}
       id={model.id}
       className="quick-look-popover"
-      data-mode={state.mode}
-      role={state.mode === "mobile" ? "dialog" : "tooltip"}
+      data-mode={shown.mode}
+      data-state={leaving ? "closed" : "open"}
+      role={shown.mode === "mobile" ? "dialog" : "tooltip"}
       aria-label={
-        state.mode === "mobile" ? `Quick look at ${model.title}` : undefined
+        shown.mode === "mobile" ? `Quick look at ${model.title}` : undefined
       }
-      style={{ left: position.left, top: position.top, width: position.width }}
+      style={{
+        left: position.left,
+        top: position.top,
+        width: position.width,
+        transformOrigin: position.origin,
+      }}
     >
       <PortfolioArtwork variant={model.artwork} label="Quick look" compact />
       <div className="quick-look-head">
         <span>{model.eyebrow}</span>
-        {state.mode === "mobile" ? (
+        {shown.mode === "mobile" ? (
           <button type="button" onClick={onClose} aria-label="Close quick look">
             <X />
           </button>
@@ -173,7 +198,7 @@ export function QuickLook({
           <li key={highlight}>{highlight}</li>
         ))}
       </ul>
-      {state.mode === "mobile" ? (
+      {shown.mode === "mobile" ? (
         <small>Tap the card for the complete detail view.</small>
       ) : null}
     </div>,
