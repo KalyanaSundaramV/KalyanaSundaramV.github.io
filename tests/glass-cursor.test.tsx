@@ -167,7 +167,7 @@ describe("liquid chrome", () => {
     view.unmount();
     expect(destroy).toHaveBeenCalledTimes(3);
   });
-  it("updates GPU tint and releases hidden/reduced-motion chrome", async () => {
+  it("recaptures on theme change and releases hidden/reduced-motion chrome", async () => {
     const view = render(
       <LiquidGlass
         menuOpen={false}
@@ -186,22 +186,27 @@ describe("liquid chrome", () => {
         importer={importer}
       />,
     );
-    expect(setTint).toHaveBeenLastCalledWith("rgba(37, 44, 76, 0.34)");
+    expect(destroy).toHaveBeenCalledTimes(1);
+    show();
+    await waitFor(() => expect(initialize).toHaveBeenCalledTimes(2));
+    expect(initialize.mock.calls[1][0]).toMatchObject({
+      tint: "rgba(37, 44, 76, 0.34)",
+    });
     Object.defineProperty(document, "hidden", {
       configurable: true,
       value: true,
     });
     fireEvent(document, new Event("visibilitychange"));
-    expect(destroy).toHaveBeenCalledTimes(1);
+    expect(destroy).toHaveBeenCalledTimes(2);
     Object.defineProperty(document, "hidden", {
       configurable: true,
       value: false,
     });
     fireEvent(document, new Event("visibilitychange"));
-    await waitFor(() => expect(initialize).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(initialize).toHaveBeenCalledTimes(3));
     reduced = true;
     act(() => motionListeners.forEach((listener) => listener()));
-    expect(destroy).toHaveBeenCalledTimes(2);
+    expect(destroy).toHaveBeenCalledTimes(3);
   });
   it("context loss restores CSS and does not immediately recreate the lost lens", async () => {
     render(
