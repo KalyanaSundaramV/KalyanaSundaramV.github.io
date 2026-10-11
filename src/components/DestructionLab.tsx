@@ -1,5 +1,6 @@
 import {
   Canvas,
+  addAfterEffect,
   type ThreeEvent,
   useFrame,
   useThree,
@@ -440,6 +441,46 @@ function CameraRig({
   return null;
 }
 
+// The resolved subtree reports pixels after R3F's renderer, never onCreated.
+function SceneFirstFrame({ onFrame }: { onFrame?: () => void }) {
+  const { gl } = useThree();
+  useEffect(() => {
+    if (!onFrame) return;
+    const before = gl.info.render.frame;
+    let delivered = false;
+    return addAfterEffect(() => {
+      if (!delivered && gl.info.render.frame > before) {
+        delivered = true;
+        onFrame();
+      }
+    });
+  }, [gl, onFrame]);
+  return null;
+}
+
+function CaptureCamera({ frame }: { frame: number }) {
+  useFrame(({ camera, gl, scene }) => {
+    const angle = (frame / 300) * Math.PI * 2;
+    // A settled, periodic orbit: both pose and velocity close at frame 300.
+    camera.position.set(
+      BUILDING_X + 13 + Math.sin(angle) * 4,
+      15 + Math.cos(angle) * 0.7,
+      38 + Math.cos(angle) * 2,
+    );
+    camera.lookAt(BUILDING_X, 3.2, 0);
+    const ortho = camera as OrthographicCamera;
+    ortho.zoom = 30;
+    ortho.updateProjectionMatrix();
+    gl.render(scene, camera);
+    gl.domElement.dataset.captureFrame = String(frame);
+    gl.domElement.dataset.capturePose = JSON.stringify([
+      ...camera.position.toArray(),
+      ortho.zoom,
+    ]);
+  }, 1);
+  return null;
+}
+
 function SceneTelemetry({ onFps }: { onFps: (fps: number) => void }) {
   const sample = useRef({ frames: 0, startedAt: performance.now() });
 
@@ -455,7 +496,13 @@ function SceneTelemetry({ onFps }: { onFps: (fps: number) => void }) {
   return null;
 }
 
-function BuildingOrbitController({ scene }: { scene: ScenePreset }) {
+function BuildingOrbitController({
+  scene,
+  onReady,
+}: {
+  scene: ScenePreset;
+  onReady?: () => void;
+}) {
   const { camera, gl } = useThree();
   const controls = useRef<ThreeOrbitControls | null>(null);
   // Glide back to the building after 8 s without camera input.
@@ -507,6 +554,8 @@ function BuildingOrbitController({ scene }: { scene: ScenePreset }) {
     const enableControls = () => {
       idle.ready();
       orbit.enabled = true;
+      gl.domElement.dataset.demoControlsReady = "true";
+      onReady?.();
       gl.domElement.style.cursor = "grab";
       orbit.update();
       gl.domElement.dataset.cameraZoom = (
@@ -660,9 +709,10 @@ function BuildingOrbitController({ scene }: { scene: ScenePreset }) {
       returning.current = false;
       orbit.dispose();
       gl.domElement.style.cursor = "";
+      delete gl.domElement.dataset.demoControlsReady;
       controls.current = null;
     };
-  }, [camera, gl, scene.id]);
+  }, [camera, gl, scene.id, onReady]);
 
   useFrame((_, delta) => {
     const orbit = controls.current;
@@ -3547,6 +3597,9 @@ function DestructionScene({
   timeScale,
   paused,
   onFps,
+  onFirstFrame,
+  onControlsReady,
+  captureFrame,
 }: {
   scene: ScenePreset;
   tool: ToolId;
@@ -3569,6 +3622,9 @@ function DestructionScene({
   timeScale: number;
   paused: boolean;
   onFps: (fps: number) => void;
+  onFirstFrame?: () => void;
+  onControlsReady?: () => void;
+  captureFrame?: number;
 }) {
   const environment = useMemo(() => createEnvironment(scene), [scene]);
   const keyTarget = useMemo(() => new Object3D(), []);
@@ -3629,12 +3685,18 @@ function DestructionScene({
         color="#7f9cc4"
         intensity={(darkMode ? 0.45 : 0.6) * light}
       />
-      <CameraRig
-        scene={scene}
-        overviewDistance={environment.overviewDistance}
-      />
-      <BuildingOrbitController scene={scene} />
-      <SceneTelemetry onFps={onFps} />
+      {captureFrame === undefined ? (
+        <>
+          <CameraRig
+            scene={scene}
+            overviewDistance={environment.overviewDistance}
+          />
+          <BuildingOrbitController scene={scene} onReady={onControlsReady} />
+          <SceneTelemetry onFps={onFps} />
+        </>
+      ) : (
+        <CaptureCamera frame={captureFrame} />
+      )}
       {/* ponytail: wind is uniform drift (tilted gravity on loose debris),
           not aerodynamics; add per-body drag forces if gusts are needed. */}
       <Physics
@@ -3656,6 +3718,21 @@ function DestructionScene({
         </RigidBody>
         {customEnvironment ? (
           <CustomMeshModel asset={customEnvironment} onStatus={onMeshStatus} />
+        ) : captureFrame !== undefined ? (
+          <group>
+            {environment.surfaces.map((surface) => (
+              <Surface key={surface.id} surface={surface} />
+            ))}
+            {environment.props.map((prop) => (
+              <group
+                key={prop.id}
+                position={prop.position}
+                rotation={prop.rotation ?? [0, 0, 0]}
+              >
+                <PropModel prop={prop} time={0} />
+              </group>
+            ))}
+          </group>
         ) : (
           <Environment
             scene={scene}
@@ -3683,7 +3760,7 @@ function DestructionScene({
             blast={blast}
           />
         )}
-        {!customBuilding && (
+        {captureFrame === undefined && !customBuilding && (
           <ToolActor
             tool={tool}
             pulse={pulse}
@@ -3699,8 +3776,9 @@ function DestructionScene({
             playbackRate={timeScale}
           />
         ) : null}
+        <SceneFirstFrame onFrame={onFirstFrame} />
       </Physics>
-      {!customBuilding && (
+      {captureFrame === undefined && !customBuilding && (
         <>
           <ImpactDust
             pulse={pulse}
@@ -3767,10 +3845,14 @@ const playbackRates = [0.5, 1, 2] as const;
 export function DestructionLab({
   darkMode = false,
   onUnavailable,
+  onFirstFrame,
+  onControlsReady,
 }: {
   darkMode?: boolean;
   /** Called when the scene cannot render, so the page can show its fallback. */
   onUnavailable?: () => void;
+  onFirstFrame?: () => void;
+  onControlsReady?: () => void;
 }) {
   const [sceneIndex, setSceneIndex] = useState(2);
   const [tool, setTool] = useState<ToolId>("wrecking-ball");
@@ -4114,6 +4196,7 @@ export function DestructionLab({
             gl={{ antialias: true, powerPreference: "high-performance" }}
             onCreated={({ gl }) => {
               canvasRef.current = gl.domElement;
+              gl.domElement.dataset.liquidIgnore = "true";
               setSimulationState(
                 reducedPerformance ? "reduced-performance" : "ready",
               );
@@ -4142,6 +4225,8 @@ export function DestructionLab({
               timeScale={timeScale}
               paused={paused}
               onFps={setFps}
+              onControlsReady={onControlsReady}
+              onFirstFrame={onFirstFrame}
             />
           </Canvas>
         </DestructionErrorBoundary>
@@ -4439,6 +4524,70 @@ export function DestructionLab({
           </span>
         ) : null}
       </div>
+    </div>
+  );
+}
+
+// DEV-only entry, lazily imported by App; the production page never mounts it.
+export function HomesteadCapture() {
+  const [frame, setFrame] = useState(0);
+  const debrisHazards = useRef(new Map<string, DebrisHazard>());
+  const scene = scenePresets[0];
+  const noop = useCallback(() => {}, []);
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 99999 }}>
+      <input
+        aria-label="Capture frame"
+        type="number"
+        min={0}
+        max={300}
+        value={frame}
+        style={{
+          position: "fixed",
+          width: 1,
+          height: 1,
+          opacity: 0,
+          pointerEvents: "none",
+        }}
+        onChange={(event) =>
+          setFrame(Math.max(0, Math.min(300, Number(event.target.value))))
+        }
+      />
+      <Canvas
+        orthographic
+        shadows="basic"
+        dpr={1}
+        camera={{
+          position: [16.2, 15.7, 40],
+          zoom: 30,
+          near: CAMERA_NEAR_CLIP,
+          far: 500,
+        }}
+        gl={{ antialias: true, powerPreference: "high-performance" }}
+      >
+        <DestructionScene
+          scene={scene}
+          tool="hammer"
+          pulse={0}
+          damage={0}
+          resetToken={0}
+          target={nearestPartTarget(scene)}
+          onTarget={noop}
+          onDamage={noop}
+          onFailures={noop}
+          debrisHazards={debrisHazards}
+          blast={null}
+          onStress={noop}
+          customBuilding={null}
+          customEnvironment={null}
+          onMeshStatus={noop}
+          darkMode={false}
+          timeScale={0}
+          paused
+          onFps={noop}
+          captureFrame={frame}
+        />
+      </Canvas>
     </div>
   );
 }
