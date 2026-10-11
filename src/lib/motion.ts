@@ -3,8 +3,8 @@ export const motionTokens = {
     fast: 0.14,
     normal: 0.26,
     slow: 0.5,
-    reveal: 0.7,
-    section: 0.85,
+    reveal: 0.65,
+    section: 0.65,
   },
   ease: {
     ui: "cubic-bezier(0.2, 0.8, 0.2, 1)",
@@ -15,7 +15,7 @@ export const motionTokens = {
 } as const;
 
 export const revealPresets = {
-  fadeUp: { autoAlpha: 0, y: 36 },
+  fadeUp: { autoAlpha: 0, y: 24 },
   fadeDown: { autoAlpha: 0, y: -24 },
   fadeLeft: { autoAlpha: 0, x: 34 },
   fadeRight: { autoAlpha: 0, x: -34 },

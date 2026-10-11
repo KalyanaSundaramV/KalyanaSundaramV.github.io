@@ -83,20 +83,22 @@ export function DetailDialog({ activeDetail, onClose }: DetailDialogProps) {
         onKeyDown={trapFocus}
       >
         <div className="case-study-head" data-detail-reveal="header">
-          <div>
-            <span>{model.eyebrow}</span>
-            <h2 id="detail-dialog-title">{model.title}</h2>
-            <p id="detail-dialog-summary">{model.summary}</p>
+          <div className="case-study-head-content">
+            <div>
+              <span>{model.eyebrow}</span>
+              <h2 id="detail-dialog-title">{model.title}</h2>
+              <p id="detail-dialog-summary">{model.summary}</p>
+            </div>
+            <button
+              ref={closeRef}
+              type="button"
+              className="icon-button"
+              onClick={onClose}
+              aria-label="Close details"
+            >
+              <X />
+            </button>
           </div>
-          <button
-            ref={closeRef}
-            type="button"
-            className="icon-button"
-            onClick={onClose}
-            aria-label="Close details"
-          >
-            <X />
-          </button>
         </div>
 
         {activeDetail.kind === "project" ? (

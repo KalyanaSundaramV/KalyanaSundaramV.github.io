@@ -1,4 +1,7 @@
+/// <reference types="vite/client" />
 import {
+  lazy,
+  Suspense,
   type ComponentType,
   useCallback,
   useEffect,
@@ -40,6 +43,8 @@ import {
   PortfolioArtwork,
   ProjectArtwork,
 } from "@/components/art/PortfolioArtwork";
+import { PageCursor } from "@/components/PageCursor";
+import { LiquidGlass } from "@/components/glass/LiquidGlass";
 import { DemoStage } from "@/components/DemoStage";
 import { LayeredGlassAsset } from "@/components/glass/LayeredGlassAsset";
 import { AnimatedCounter } from "@/components/motion/AnimatedCounter";
@@ -355,7 +360,27 @@ function DestructionPipeline() {
   );
 }
 
+const HomesteadCapture = lazy(() =>
+  import("@/components/DestructionLab").then((module) => ({
+    default: module.HomesteadCapture,
+  })),
+);
+
 export default function App() {
+  if (
+    import.meta.env.DEV &&
+    new URLSearchParams(window.location.search).get("capture") === "homestead"
+  ) {
+    return (
+      <Suspense fallback={null}>
+        <HomesteadCapture />
+      </Suspense>
+    );
+  }
+  return <Portfolio />;
+}
+
+function Portfolio() {
   const pageRef = useRef<HTMLDivElement>(null);
   const projectTrackRef = useRef<HTMLDivElement>(null);
   const detailTriggerRef = useRef<HTMLElement | null>(null);
@@ -368,6 +393,10 @@ export default function App() {
   const handleDemoLive = useCallback(() => {
     setDemoLive(true);
     if (window.matchMedia("(min-width: 961px)").matches) setIntroHidden(true);
+  }, []);
+  const handleDemoStop = useCallback(() => {
+    setDemoLive(false);
+    setIntroHidden(false);
   }, []);
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [pageVisible, setPageVisible] = useState(() =>
@@ -725,7 +754,16 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!demoLive) return;
+    if (!demoLive) {
+      const panel =
+        pageRef.current?.querySelector<HTMLElement>(".hero-copy-glass");
+      if (panel) {
+        gsap.killTweensOf(panel);
+        gsap.set(panel, { clearProps: "opacity,visibility,transform" });
+        panel.removeAttribute("inert");
+      }
+      return;
+    }
     const reduce = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -764,6 +802,12 @@ export default function App() {
         } as React.CSSProperties
       }
     >
+      <PageCursor />
+      <LiquidGlass
+        menuOpen={menuOpen}
+        detailOpen={Boolean(activeDetail)}
+        theme={theme}
+      />
       <header className="site-header" data-scrolled={headerScrolled}>
         <LayeredGlassAsset
           asset="nav_bar"
@@ -839,15 +883,17 @@ export default function App() {
       </header>
       <div className="mobile-menu" data-open={menuOpen} aria-hidden={!menuOpen}>
         <div className="mobile-menu-head">
-          <span className="wordmark">{profile.name}</span>
-          <button
-            type="button"
-            className="icon-button"
-            aria-label="Close navigation"
-            onClick={() => setMenuOpen(false)}
-          >
-            <X />
-          </button>
+          <div className="mobile-menu-head-content">
+            <span className="wordmark">{profile.name}</span>
+            <button
+              type="button"
+              className="icon-button"
+              aria-label="Close navigation"
+              onClick={() => setMenuOpen(false)}
+            >
+              <X />
+            </button>
+          </div>
         </div>
         <nav aria-label="Mobile navigation">
           {navItems.map((item, index) => (
@@ -879,7 +925,11 @@ export default function App() {
               className="hero-demo-glass"
               contentClassName="hero-demo-content"
             >
-              <DemoStage darkMode={theme === "dark"} onLive={handleDemoLive} />
+              <DemoStage
+                darkMode={theme === "dark"}
+                onLive={handleDemoLive}
+                onStop={handleDemoStop}
+              />
             </LayeredGlassAsset>
             <LayeredGlassAsset
               asset="hero_text_panel"
