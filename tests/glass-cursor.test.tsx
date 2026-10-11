@@ -190,7 +190,7 @@ describe("liquid chrome", () => {
     show();
     await waitFor(() => expect(initialize).toHaveBeenCalledTimes(2));
     expect(initialize.mock.calls[1][0]).toMatchObject({
-      tint: "rgba(37, 44, 76, 0.34)",
+      tint: "rgba(30, 30, 30, 0.34)",
     });
     Object.defineProperty(document, "hidden", {
       configurable: true,

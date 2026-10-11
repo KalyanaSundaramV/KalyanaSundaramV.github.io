@@ -5,6 +5,7 @@ import {
   type ComponentType,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -580,7 +581,7 @@ function Portfolio() {
     return () => document.removeEventListener("visibilitychange", update);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.documentElement.dataset.theme = theme;
     window.localStorage.setItem("kalyan-portfolio-theme", theme);
     document

@@ -5168,3 +5168,79 @@ body::before,
     }
   }
 }
+
+/* Monochrome page materials with orange accents. Scene/media pixels stay full colour. */
+:root {
+  --page-base: #f1f1f1;
+  --glass-ink: #252525;
+  --glass-muted: #656565;
+  --glass-cyan: #858585;
+  --glass-violet: #858585;
+  --glass-green: #858585;
+  --glass-panel: rgb(248 248 248 / 0.54);
+  --glass-panel-strong: rgb(255 255 255 / 0.79);
+  --glass-shadow: 0 22px 60px rgb(0 0 0 / 0.12);
+  --glass-shadow-soft: 0 10px 32px rgb(0 0 0 / 0.1);
+  --aurora-a: rgb(255 120 47 / 0.18);
+  --aurora-b: rgb(255 255 255 / 0.32);
+  --aurora-c: rgb(100 100 100 / 0.12);
+  --accent-cool: var(--glass-accent);
+  --signal: #858585;
+  --positive: #858585;
+}
+:root[data-theme="dark"] {
+  --page-base: #000;
+  --glass-ink: #f5f5f5;
+  --glass-muted: #b3b3b3;
+  --glass-panel: rgb(255 255 255 / 0.065);
+  --glass-panel-strong: rgb(255 255 255 / 0.1);
+  --glass-shadow: 0 24px 70px rgb(0 0 0 / 0.72);
+  --glass-shadow-soft: 0 12px 36px rgb(0 0 0 / 0.58);
+  --aurora-a: rgb(255 120 47 / 0.13);
+  --aurora-b: rgb(255 255 255 / 0.055);
+  --aurora-c: rgb(100 100 100 / 0.08);
+}
+html,
+body {
+  background: var(--page-base);
+}
+.hero-section,
+.hero-panel {
+  overflow-anchor: none;
+}
+.project-artwork,
+.portfolio-artwork,
+.hero-ambient .ambient-blue,
+.hero-ambient .ambient-purple {
+  filter: grayscale(1);
+}
+.page-cursor i {
+  border-color: rgb(255 120 47 / 0.8) !important;
+  box-shadow:
+    0 0 18px rgb(255 120 47 / 0.22),
+    inset 0 0 12px rgb(255 255 255 / 0.15);
+}
+.demo-poster {
+  background: linear-gradient(90deg, rgb(245 245 245 / 0.55), transparent 52%);
+}
+:root[data-theme="dark"] .demo-poster {
+  background: linear-gradient(90deg, rgb(8 8 8 / 0.58), transparent 56%);
+}
+/* Keep the interactive lab's established material/status palette. */
+.destruction-lab {
+  --glass-cyan: #4d9dba;
+  --glass-violet: #7565d7;
+  --glass-green: #76a956;
+  --glass-panel: rgb(233 241 255 / 0.54);
+  --glass-panel-strong: rgb(248 250 255 / 0.79);
+  --accent-cool: #377f82;
+  --signal: #8aa85f;
+  --positive: #6f913f;
+}
+:root[data-theme="dark"] .destruction-lab {
+  --glass-panel: rgb(255 255 255 / 0.065);
+  --glass-panel-strong: rgb(255 255 255 / 0.1);
+  --accent-cool: #63d6d1;
+  --signal: #a7d76b;
+  --positive: #a7d76b;
+}

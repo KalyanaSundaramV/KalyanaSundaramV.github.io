@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 import type { LiquidLens } from "liquid-gl";
+import { motionTokens } from "@/lib/motion";
 
 const loadGlass = () => import("liquid-gl");
 const tint = (theme: string) =>
-  theme === "dark" ? "rgba(37, 44, 76, 0.34)" : "rgba(210, 222, 255, 0.22)";
+  theme === "dark" ? "rgba(30, 30, 30, 0.34)" : "rgba(245, 245, 245, 0.22)";
 
 export function LiquidGlass({
   menuOpen,
@@ -47,8 +48,12 @@ export function LiquidGlass({
     let visible = false;
     let lost = false;
     let removeLoss = () => {};
+    let initializeTimer: ReturnType<typeof setTimeout> | undefined;
+    let initializeFrame = 0;
     const destroy = () => {
       revision++;
+      clearTimeout(initializeTimer);
+      cancelAnimationFrame(initializeFrame);
       removeLoss();
       lens.current?.destroy();
       lens.current = null;
@@ -67,6 +72,17 @@ export function LiquidGlass({
       const request = revision;
       try {
         const module = await importer();
+        if (disposed || request !== revision) return;
+        // Body/page colours transition for 220ms. Snapshot their settled theme,
+        // retaining usable CSS glass until the existing 260ms motion token ends.
+        await new Promise<void>((resolve) => {
+          initializeTimer = setTimeout(() => {
+            initializeFrame = requestAnimationFrame(() => {
+              initializeFrame = 0;
+              resolve();
+            });
+          }, motionTokens.duration.normal * 1000);
+        });
         if (disposed || request !== revision) return;
         // v3's selector capture masks native text. Disable that compositor;
         // retain the existing content child above the lens and out of snapshots.
