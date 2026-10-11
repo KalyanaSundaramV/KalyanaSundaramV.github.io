@@ -10,7 +10,7 @@ export const profile: Profile = {
   summary:
     "I build gameplay systems, rapid prototypes, Unity production pipelines, and practical Windows and Android tools across Unity, C#, Cocos Creator, TypeScript, and .NET.",
   about:
-    "I'm a Bengaluru-based game and tools engineer with experience in mobile gameplay, technical leadership, rapid prototyping, native desktop products, and automation. I move from product question to working implementation, then make the result easier to test, inspect, and extend. I am available for full-time roles and focused consulting engagements.",
+    "I'm a Bengaluru-based game and tools engineer with experience in mobile gameplay, technical leadership, rapid prototyping, native desktop products, and automation. I move from product question to working implementation, then make the result easier to test, inspect, and extend. I run that work as a multi-agent AI workflow across Claude Code, OpenAI Codex, and GitHub Copilot, with exclusive file ownership, ticketed handoffs, and build and test gates. I am available for full-time roles and focused consulting engagements.",
   currentStatus: [
     {
       label: "Building",
@@ -25,6 +25,11 @@ export const profile: Profile = {
     {
       label: "LinkedIn",
       href: "https://www.linkedin.com/in/kalyana-sundaram-v-742ba731/",
+      placeholder: "",
+    },
+    {
+      label: "GitHub",
+      href: "https://github.com/KalyanaSundaramV",
       placeholder: "",
     },
     {
@@ -43,6 +48,11 @@ export const profile: Profile = {
       label: "LinkedIn",
       value: "linkedin.com/in/kalyana-sundaram-v-742ba731",
       href: "https://www.linkedin.com/in/kalyana-sundaram-v-742ba731/",
+    },
+    {
+      label: "GitHub",
+      value: "github.com/KalyanaSundaramV",
+      href: "https://github.com/KalyanaSundaramV",
     },
     { label: "Location", value: "Bengaluru, Karnataka, India", href: null },
   ],
