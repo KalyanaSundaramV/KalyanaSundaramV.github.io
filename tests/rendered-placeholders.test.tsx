@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import App from "@/App";
 import { DetailDialog } from "@/components/detail/DetailDialog";
@@ -92,6 +92,7 @@ function everyDetail(): Array<{ label: string; detail: ActiveDetail }> {
 afterEach(() => {
   cleanup();
   document.body.style.overflow = "";
+  vi.restoreAllMocks();
 });
 
 describe("public pages show no placeholder text", () => {
@@ -121,6 +122,36 @@ describe("public pages show no placeholder text", () => {
     anchor.remove();
   });
 
+  it("returns mobile navigation focus and keeps the closed menu inert", () => {
+    vi.spyOn(window, "matchMedia").mockImplementation(
+      (query) =>
+        ({
+          matches: query.includes("prefers-reduced-motion"),
+          media: query,
+          addEventListener: () => undefined,
+          removeEventListener: () => undefined,
+        }) as unknown as MediaQueryList,
+    );
+    render(<App />);
+    const menu = document.querySelector(".mobile-menu")!;
+    const opener = screen.getByRole("button", { name: "Open navigation" });
+    expect(menu).toHaveAttribute("inert");
+    fireEvent.click(opener);
+    expect(menu).not.toHaveAttribute("inert");
+    const close = screen.getByRole("button", { name: "Close navigation" });
+    close.focus();
+    fireEvent.click(close);
+    expect(opener).toHaveFocus();
+    expect(menu).toHaveAttribute("inert");
+    fireEvent.click(opener);
+    const heroPlay = screen.getAllByRole("button", {
+      name: "Play interactive demo",
+    })[0];
+    heroPlay.focus();
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(heroPlay).toHaveFocus();
+    expect(menu).toHaveAttribute("inert");
+  });
   it("renders the full page without placeholder text", () => {
     render(<App />);
     // The 3D lab is lazy: the page shows its poster until a visitor asks for it.

@@ -600,6 +600,15 @@ function Portfolio() {
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previousOverflow;
+      if (
+        pageRef.current
+          ?.querySelector(".mobile-menu")
+          ?.contains(document.activeElement)
+      ) {
+        pageRef.current
+          .querySelector<HTMLButtonElement>(".mobile-menu-button")
+          ?.focus({ preventScroll: true });
+      }
     };
   }, [menuOpen]);
 
@@ -881,7 +890,12 @@ function Portfolio() {
           </div>
         </LayeredGlassAsset>
       </header>
-      <div className="mobile-menu" data-open={menuOpen} aria-hidden={!menuOpen}>
+      <div
+        className="mobile-menu"
+        data-open={menuOpen}
+        aria-hidden={!menuOpen}
+        inert={!menuOpen}
+      >
         <div className="mobile-menu-head">
           <div className="mobile-menu-head-content">
             <span className="wordmark">{profile.name}</span>

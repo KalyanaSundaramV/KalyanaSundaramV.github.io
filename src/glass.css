@@ -5107,6 +5107,7 @@ body::before,
 
 /* Over the bright demo image the panels need real tint to stay legible. */
 :root[data-theme="dark"] .hero-copy-glass,
+:root[data-theme="dark"] .demo-poster-card,
 :root[data-theme="dark"] .hero-demo-content {
   background: rgb(8 8 10 / 0.62);
 }
@@ -5144,4 +5145,26 @@ body::before,
 .detail-disclosure-group[open]::details-content {
   block-size: auto;
   opacity: 1;
+}
+
+/* New popup/disclosure rules must also honour the shared motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  .quick-look-popover,
+  .quick-look-popover[data-state="closed"],
+  .case-study-modal,
+  .case-study-modal[data-open="false"],
+  .case-study-dialog,
+  .case-study-modal[data-open="false"] .case-study-dialog,
+  .detail-disclosure-group::details-content {
+    transition: none;
+    transform: none;
+  }
+  @starting-style {
+    .quick-look-popover,
+    .case-study-modal[data-open="true"],
+    .case-study-modal[data-open="true"] .case-study-dialog {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }
