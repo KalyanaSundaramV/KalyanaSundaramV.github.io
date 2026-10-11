@@ -178,8 +178,9 @@ function DemoPreview({ released }: { released: boolean }) {
       >
         {!released && (
           <>
-            <source src={heroPreview.webm.href} type="video/webm" />
+            {/* MP4 first: smaller here, and Chromium 152 fails to decode this WebM. */}
             <source src={heroPreview.mp4.href} type="video/mp4" />
+            <source src={heroPreview.webm.href} type="video/webm" />
           </>
         )}
       </video>
@@ -221,7 +222,9 @@ function DemoPoster({
             className="button primary"
             type="button"
             onClick={onPlay}
-            disabled={loading}
+            // aria-disabled, not disabled: browsers blur disabled buttons,
+            // dropping focus to <body> before the scene takes it.
+            aria-disabled={loading}
             aria-busy={loading}
           >
             <Play aria-hidden="true" />{" "}

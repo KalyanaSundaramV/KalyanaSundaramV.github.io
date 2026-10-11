@@ -178,7 +178,10 @@ describe("DemoStage", () => {
     const play = screen.getByRole("button", { name: "Play interactive demo" });
     play.focus();
     fireEvent.click(play);
-    expect(screen.getByRole("button", { name: /Loading demo/ })).toBeDisabled();
+    const loading = screen.getByRole("button", { name: /Loading demo/ });
+    expect(loading).toHaveAttribute("aria-disabled", "true");
+    expect(loading).not.toBeDisabled();
+    expect(loading).toHaveFocus();
     await finishLoading();
     await waitFor(() =>
       expect(document.querySelector("#interactive-demo")).toHaveAttribute(
@@ -282,7 +285,7 @@ describe("hero preview and demo exit", () => {
     expect(video).toHaveAttribute("tabindex", "-1");
     expect(
       [...video.querySelectorAll("source")].map((source) => source.type),
-    ).toEqual(["video/webm", "video/mp4"]);
+    ).toEqual(["video/mp4", "video/webm"]);
     visibility(0.34);
     expect(mediaPlay).not.toHaveBeenCalled();
     visibility(0.35);
