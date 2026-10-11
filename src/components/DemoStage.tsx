@@ -373,6 +373,18 @@ export function DemoStage({
             projects?.querySelector<HTMLElement>("h2") ?? projects;
           heading?.setAttribute("tabindex", "-1");
           heading?.focus({ preventScroll: true });
+          if (projects && document.activeElement !== heading) {
+            projects.tabIndex = -1;
+            if (
+              !projects.hasAttribute("aria-label") &&
+              !projects.hasAttribute("aria-labelledby")
+            )
+              projects.setAttribute(
+                "aria-label",
+                heading?.textContent?.trim() || "Projects",
+              );
+            projects.focus({ preventScroll: true });
+          }
           history.replaceState(null, "", "#projects");
           projects?.scrollIntoView({
             behavior: window.matchMedia(motionQuery).matches

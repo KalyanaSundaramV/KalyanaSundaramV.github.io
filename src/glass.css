@@ -5204,10 +5204,6 @@ html,
 body {
   background: var(--page-base);
 }
-.hero-section,
-.hero-panel {
-  overflow-anchor: none;
-}
 .project-artwork,
 .portfolio-artwork,
 .hero-ambient .ambient-blue,

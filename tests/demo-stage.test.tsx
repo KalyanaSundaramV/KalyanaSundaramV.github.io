@@ -452,6 +452,32 @@ describe("hero preview and demo exit", () => {
     await waitFor(() => expect(strikes).toHaveBeenCalledTimes(2));
     expect(onStop).toHaveBeenCalledTimes(1);
   });
+  it("Continue down focuses the section when its unrevealed heading cannot receive focus", async () => {
+    const section = document.createElement("section");
+    section.id = "projects";
+    section.innerHTML = '<h2 style="visibility:hidden">Selected work</h2>';
+    section.scrollIntoView = vi.fn();
+    vi.spyOn(
+      section.querySelector<HTMLElement>("h2")!,
+      "focus",
+    ).mockImplementation(() => {});
+    document.body.append(section);
+    await mount();
+    requestStrike();
+    await finishLoading();
+    await waitFor(() =>
+      expect(document.querySelector("#interactive-demo")).toHaveAttribute(
+        "data-phase",
+        "live",
+      ),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Continue down" }));
+    await waitFor(() => expect(section).toHaveFocus());
+    expect(section).toHaveAttribute("tabindex", "-1");
+    expect(section).toHaveAttribute("aria-label", "Selected work");
+    expect(section.scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth" });
+    section.remove();
+  });
   it("Continue down stops, focuses Projects and uses reduced-motion scrolling", async () => {
     reduced = true;
     const section = document.createElement("section");
