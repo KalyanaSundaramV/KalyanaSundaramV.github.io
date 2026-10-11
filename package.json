@@ -1,0 +1,49 @@
+{
+  "name": "kalyan-scroll-world-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.34.6",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint . --ignore-pattern dist",
+    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json",
+    "test": "pnpm test:content && pnpm test:ui",
+    "test:content": "node --test tests/site.test.mjs",
+    "test:ui": "vitest run",
+    "check:public": "node scripts/check-public-files.mjs",
+    "format": "prettier --write . --ignore-path .gitignore",
+    "format:check": "prettier --check . --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "@gsap/react": "^2.1.2",
+    "@react-three/fiber": "^9.6.1",
+    "@react-three/rapier": "^2.2.0",
+    "gsap": "^3.15.0",
+    "lucide-react": "^1.24.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.185.1",
+    "@vitejs/plugin-react": "^6.0.3",
+    "autoprefixer": "^10.5.2",
+    "eslint": "^10.7.0",
+    "jsdom": "^29.1.1",
+    "postcss": "^8.5.16",
+    "prettier": "^3.9.5",
+    "tailwindcss": "3.4.17",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.63.0",
+    "vite": "^8.1.4",
+    "vitest": "^4.1.10"
+  }
+}

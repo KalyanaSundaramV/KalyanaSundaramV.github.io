@@ -1,0 +1,16 @@
+node_modules
+dist
+.vite
+*.log
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+
+# Third-party game-asset exports are fetched from the private asset repo, never committed.
+public/kit/
+.kit-assets/
+
+# Internal planning notes, never published.
+.impeccable/
+PRODUCT.md
+docs/

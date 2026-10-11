@@ -1,0 +1,93 @@
+name: Build and deploy portfolio
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # Pull requests never see the kit key and never deploy.
+      TRUSTED_DEPLOY: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+      HAS_KIT_KEY: ${{ secrets.KIT_DEPLOY_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run format:check
+      - run: pnpm run lint
+      - run: pnpm run typecheck
+      - run: pnpm test
+
+      - name: Read kit lock
+        id: kit
+        shell: bash
+        run: |
+          if [ -f kit.lock.json ]; then
+            echo "locked=true" >> "$GITHUB_OUTPUT"
+            echo "repository=$(node -p "require('./kit.lock.json').repository")" >> "$GITHUB_OUTPUT"
+            echo "commit=$(node -p "require('./kit.lock.json').commit")" >> "$GITHUB_OUTPUT"
+          else
+            echo "locked=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fail when the kit is locked but its key is missing
+        if: env.TRUSTED_DEPLOY == 'true' && steps.kit.outputs.locked == 'true' && env.HAS_KIT_KEY != 'true'
+        run: |
+          echo "kit.lock.json exists but the KIT_DEPLOY_KEY secret is not configured." >&2
+          exit 1
+
+      - name: Fetch private kit assets
+        if: env.TRUSTED_DEPLOY == 'true' && steps.kit.outputs.locked == 'true' && env.HAS_KIT_KEY == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.kit.outputs.repository }}
+          ref: ${{ steps.kit.outputs.commit }}
+          ssh-key: ${{ secrets.KIT_DEPLOY_KEY }}
+          path: .kit-assets
+          persist-credentials: false
+
+      - name: Verify and stage kit assets
+        if: env.TRUSTED_DEPLOY == 'true' && steps.kit.outputs.locked == 'true' && env.HAS_KIT_KEY == 'true'
+        run: |
+          node scripts/kit-verify.mjs --assets .kit-assets --stage public/kit
+          echo "VITE_KIT=1" >> "$GITHUB_ENV"
+
+      - run: pnpm run build
+      - run: pnpm run check:public
+
+      - if: env.TRUSTED_DEPLOY == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

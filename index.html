@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f6f4" />
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("kalyan-portfolio-theme");
+        const theme =
+          savedTheme === "light" || savedTheme === "dark"
+            ? savedTheme
+            : matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+        document.documentElement.dataset.theme = theme;
+        document
+          .querySelector('meta[name="theme-color"]')
+          ?.setAttribute("content", theme === "dark" ? "#000000" : "#f6f6f4");
+      } catch {
+        document.documentElement.dataset.theme = "light";
+      }
+    </script>
+    <meta
+      name="description"
+      content="Kalyana Sundaram V's portfolio: gameplay engineering, rapid prototypes, Unity production pipelines, and practical Windows and Android tools."
+    />
+    <meta
+      property="og:title"
+      content="Kalyana Sundaram V | Game & Tools Engineer"
+    />
+    <meta
+      property="og:description"
+      content="Gameplay systems, developer tools, and production pipelines built across Unity, C#, Cocos Creator, Android, and .NET."
+    />
+    <meta property="og:url" content="https://kalyanasundaramv.github.io/" />
+    <meta
+      property="og:image"
+      content="https://kalyanasundaramv.github.io/og-share.jpg"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Kalyan — Game Developer. Unity, Cocos and Unreal; Ludo Demolition."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="preload"
+      as="image"
+      href="/kalyan_glass_ui_png_pack/00_tokens/page_background_4k.webp"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="/kalyan_glass_ui_png_pack/00_tokens/blue_glow.webp"
+      fetchpriority="high"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media = 'all'"
+    />
+    <link
+      href="https://db.onlinewebfonts.com/c/8b75d9dcff6a48c35a46656192adf019?family=FSP+DEMO+-+PODIUM+Sharp+4.11"
+      rel="stylesheet"
+      media="print"
+      onload="this.media = 'all'"
+    />
+    <title>Kalyana Sundaram V | Game & Tools Engineer</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
