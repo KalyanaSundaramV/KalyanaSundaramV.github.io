@@ -64,6 +64,7 @@ function DemoPreview({ released }: { released: boolean }) {
     () => window.matchMedia(motionQuery).matches,
   );
   const [failed, setFailed] = useState(false);
+  const [previewError, setPreviewError] = useState<string>();
   const [playing, setPlaying] = useState(false);
   useEffect(() => {
     const element = video.current;
@@ -107,13 +108,17 @@ function DemoPreview({ released }: { released: boolean }) {
           .then(() => {
             if (!cancelled) setPlaying(true);
           })
-          .catch(() => {
+          .catch((error: unknown) => {
             if (!cancelled) {
+              setPreviewError(
+                error instanceof Error ? error.name : "PlayError",
+              );
               setFailed(true);
               setPlaying(false);
             }
           });
-      } catch {
+      } catch (error) {
+        setPreviewError(error instanceof Error ? error.name : "PlayError");
         setFailed(true);
       }
     } else {
@@ -129,6 +134,7 @@ function DemoPreview({ released }: { released: boolean }) {
     <div
       className="hero-preview-layer"
       data-playing={playing && !reduced && !failed}
+      data-preview-error={previewError}
       data-preview-state={
         released
           ? "released"
@@ -162,6 +168,9 @@ function DemoPreview({ released }: { released: boolean }) {
         aria-hidden="true"
         tabIndex={-1}
         onError={() => {
+          setPreviewError(
+            `MediaError:${video.current?.error?.code ?? "unknown"}`,
+          );
           setFailed(true);
           setPlaying(false);
           video.current?.pause();

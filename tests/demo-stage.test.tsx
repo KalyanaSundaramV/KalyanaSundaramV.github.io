@@ -334,12 +334,42 @@ describe("hero preview and demo exit", () => {
         "false",
       ),
     );
+    expect(document.querySelector(".hero-preview-layer")).toHaveAttribute(
+      "data-preview-error",
+      "Error",
+    );
     visibility(0);
     visibility(1);
     expect(mediaPlay).toHaveBeenCalledTimes(1);
     expect(document.querySelector("#interactive-demo")).toHaveAttribute(
       "data-phase",
       "poster",
+    );
+  });
+  it("ignores an AbortError from playback cancelled by leaving the hero", async () => {
+    let rejectPlay!: (error: Error) => void;
+    mediaPlay.mockImplementationOnce(
+      () =>
+        new Promise<void>((_resolve, reject) => {
+          rejectPlay = reject;
+        }),
+    );
+    await mount();
+    visibility(1);
+    await waitFor(() => expect(mediaPlay).toHaveBeenCalledTimes(1));
+    visibility(0);
+    await act(async () =>
+      rejectPlay(new DOMException("Playback interrupted", "AbortError")),
+    );
+    expect(document.querySelector(".hero-preview-layer")).not.toHaveAttribute(
+      "data-preview-error",
+    );
+    visibility(1);
+    await waitFor(() =>
+      expect(document.querySelector(".hero-preview-layer")).toHaveAttribute(
+        "data-preview-state",
+        "playing",
+      ),
     );
   });
   it("media errors show the poster without disabling Play", async () => {

@@ -17,12 +17,8 @@ export function LiquidGlass({
   importer?: typeof loadGlass;
 }) {
   const lens = useRef<LiquidLens | null>(null);
-  const currentTheme = useRef(theme);
-  currentTheme.current = theme;
   useEffect(() => {
-    lens.current?.setTint(tint(theme));
-  }, [theme]);
-  useEffect(() => {
+    // Recreate on theme changes: tint alone cannot refresh a dark snapshot.
     // ponytail: v3 exposes no WebGPU device-loss signal. WebGL has a native
     // context-loss event, so use its fallback chain until that API exists.
     if (import.meta.env.MODE === "test" && importer === loadGlass) return;
@@ -92,7 +88,7 @@ export function LiquidGlass({
           magnify: 1,
           helper: false,
           shadow: false,
-          tint: tint(currentTheme.current),
+          tint: tint(theme),
           reveal: "none",
         });
         const created = Array.isArray(result) ? result[0] : result;
@@ -162,6 +158,6 @@ export function LiquidGlass({
       motionQuery.removeEventListener("change", motion);
       destroy();
     };
-  }, [menuOpen, detailOpen, importer]);
+  }, [menuOpen, detailOpen, importer, theme]);
   return null;
 }
