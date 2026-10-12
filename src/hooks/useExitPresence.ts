@@ -16,6 +16,10 @@ export function useExitPresence<T>(
       setHeld(value);
       return;
     }
+    if (ms <= 0) {
+      setHeld(null);
+      return;
+    }
     const timer = window.setTimeout(() => setHeld(null), ms);
     return () => window.clearTimeout(timer);
   }, [value, ms]);

@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { Play, Square, ArrowDown } from "lucide-react";
+import { Square, ArrowDown } from "lucide-react";
 import { demoVideoHref, heroPreview } from "@/content/demo";
 import {
   DEMO_PLAY_REQUEST_EVENT,
@@ -187,51 +187,20 @@ function DemoPreview({ released }: { released: boolean }) {
     </div>
   );
 }
-function DemoPoster({
-  phase,
-  onPlay,
-}: {
-  phase: DemoPhase;
-  onPlay: () => void;
-}) {
+function DemoPoster({ phase }: { phase: DemoPhase }) {
   const unavailable = phase === "unavailable";
-  const loading = phase === "loading";
   return (
     <div className="demo-poster">
-      <div className="demo-poster-card">
-        <span className="demo-poster-label">Interactive web prototype</span>
-        <strong>Real-time building destruction</strong>
-        <p>
-          {unavailable
-            ? "This browser or device cannot run the WebGL scene. The rest of the portfolio works normally."
-            : "Three.js and Rapier physics in the browser. The 3D scene downloads when you start it."}
-        </p>
-        {unavailable ? (
-          demoVideoHref ? (
-            <a
-              className="button secondary"
-              href={demoVideoHref}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Watch the demo video
-            </a>
-          ) : null
-        ) : (
-          <button
-            className="button primary"
-            type="button"
-            onClick={onPlay}
-            // aria-disabled, not disabled: browsers blur disabled buttons,
-            // dropping focus to <body> before the scene takes it.
-            aria-disabled={loading}
-            aria-busy={loading}
-          >
-            <Play aria-hidden="true" />{" "}
-            {loading ? "Loading demo…" : "Play interactive demo"}
-          </button>
-        )}
-      </div>
+      {unavailable && demoVideoHref ? (
+        <a
+          className="button secondary demo-video-fallback"
+          href={demoVideoHref}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Watch the demo video
+        </a>
+      ) : null}
     </div>
   );
 }
@@ -239,10 +208,14 @@ export function DemoStage({
   darkMode = false,
   onLive,
   onStop,
+  onPhaseChange,
+  focusReturnId,
 }: {
   darkMode?: boolean;
   onLive?: () => void;
   onStop?: () => void;
+  onPhaseChange?: (phase: DemoPhase) => void;
+  focusReturnId?: string;
 }) {
   const [phase, setPhase] = useState<DemoPhase>("poster");
   const [attempt, setAttempt] = useState(0);
@@ -260,6 +233,9 @@ export function DemoStage({
     cancelAnimationFrame(raf.current);
     clearTimeout(timer.current);
   }, []);
+  useEffect(() => {
+    onPhaseChange?.(phase);
+  }, [onPhaseChange, phase]);
   useEffect(
     () => () => {
       attemptRef.current++;
@@ -392,12 +368,15 @@ export function DemoStage({
               : "smooth",
           });
         } else if (restoreFocus)
-          stageRef.current
-            ?.querySelector<HTMLButtonElement>(".demo-poster button")
-            ?.focus({ preventScroll: true });
+          (
+            (focusReturnId ? document.getElementById(focusReturnId) : null) ??
+            stageRef.current?.querySelector<HTMLButtonElement>(
+              ".demo-video-fallback",
+            )
+          )?.focus({ preventScroll: true });
       });
     },
-    [clearTransition, onStop],
+    [clearTransition, focusReturnId, onStop],
   );
   const requested = phase === "loading" || phase === "live";
   return (
@@ -436,9 +415,7 @@ export function DemoStage({
           </DemoLoadBoundary>
         </div>
       )}
-      {phase !== "live" && (
-        <DemoPoster phase={phase} onPlay={() => start(false)} />
-      )}
+      {phase !== "live" && <DemoPoster phase={phase} />}
       {requested && (
         <div className="demo-session-controls" data-liquid-ignore="true">
           <span

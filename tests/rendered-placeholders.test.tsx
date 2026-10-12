@@ -1,4 +1,10 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import App from "@/App";
 import { DetailDialog } from "@/components/detail/DetailDialog";
@@ -182,5 +188,32 @@ describe("public pages show no placeholder text", () => {
         value: matchMedia,
       });
     }
+  });
+
+  it("restores detail focus without reopening Quick Look", async () => {
+    vi.spyOn(window, "matchMedia").mockImplementation(
+      (query) =>
+        ({
+          matches:
+            query.includes("(hover: hover)") ||
+            query.includes("(pointer: fine)") ||
+            query.includes("(min-width: 961px)"),
+          media: query,
+          addEventListener: () => undefined,
+          removeEventListener: () => undefined,
+        }) as unknown as MediaQueryList,
+    );
+    render(<App />);
+    const card = document.querySelector<HTMLElement>(".project-card-action");
+    expect(card).not.toBeNull();
+    fireEvent.focus(card!);
+    await waitFor(() =>
+      expect(screen.getByRole("tooltip")).toBeInTheDocument(),
+    );
+    fireEvent.click(card!);
+    await waitFor(() => expect(screen.getByRole("dialog")).toBeInTheDocument());
+    fireEvent.click(screen.getByRole("button", { name: "Close details" }));
+    await waitFor(() => expect(card).toHaveFocus());
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
   });
 });

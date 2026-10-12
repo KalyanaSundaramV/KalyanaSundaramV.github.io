@@ -56,9 +56,13 @@ const exitMs = 120;
 export function QuickLook({
   state,
   onClose,
+  onDesktopPointerEnter,
+  onDesktopPointerLeave,
 }: {
   state: QuickLookState | null;
-  onClose: () => void;
+  onClose: (dismiss?: boolean) => void;
+  onDesktopPointerEnter?: () => void;
+  onDesktopPointerLeave?: () => void;
 }) {
   const popoverRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<Position>({
@@ -138,8 +142,17 @@ export function QuickLook({
 
   useEffect(() => {
     if (!state) return;
+    const closeFromInside = () => {
+      if (
+        state.mode === "mobile" &&
+        popoverRef.current?.contains(document.activeElement)
+      ) {
+        state.anchor.focus({ preventScroll: true });
+      }
+      onClose(true);
+    };
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") closeFromInside();
     };
     const closeOutside = (event: PointerEvent) => {
       if (state.mode !== "mobile") return;
@@ -172,6 +185,12 @@ export function QuickLook({
       data-mode={shown.mode}
       data-state={leaving ? "closed" : "open"}
       role={shown.mode === "mobile" ? "dialog" : "tooltip"}
+      onPointerEnter={
+        shown.mode === "desktop" ? onDesktopPointerEnter : undefined
+      }
+      onPointerLeave={
+        shown.mode === "desktop" ? onDesktopPointerLeave : undefined
+      }
       aria-label={
         shown.mode === "mobile" ? `Quick look at ${model.title}` : undefined
       }
@@ -186,7 +205,16 @@ export function QuickLook({
       <div className="quick-look-head">
         <span>{model.eyebrow}</span>
         {shown.mode === "mobile" ? (
-          <button type="button" onClick={onClose} aria-label="Close quick look">
+          <button
+            type="button"
+            onClick={() => {
+              if (popoverRef.current?.contains(document.activeElement)) {
+                shown.anchor.focus({ preventScroll: true });
+              }
+              onClose(true);
+            }}
+            aria-label="Close quick look"
+          >
             <X />
           </button>
         ) : null}

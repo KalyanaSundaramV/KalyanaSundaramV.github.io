@@ -132,10 +132,18 @@ async function mount(strict = false, onLive = vi.fn(), onStop = vi.fn()) {
     ...render(
       strict ? (
         <StrictMode>
-          <DemoStage onLive={onLive} onStop={onStop} />
+          <DemoStage
+            onLive={onLive}
+            onStop={onStop}
+            focusReturnId="hero-demo-play"
+          />
         </StrictMode>
       ) : (
-        <DemoStage onLive={onLive} onStop={onStop} />
+        <DemoStage
+          onLive={onLive}
+          onStop={onStop}
+          focusReturnId="hero-demo-play"
+        />
       ),
     ),
     onLive,
@@ -158,7 +166,6 @@ function expectUnavailable() {
     "data-phase",
     "unavailable",
   );
-  expect(screen.getByText(/cannot run the WebGL scene/)).toBeInTheDocument();
   expect(
     screen.queryByRole("link", { name: "Watch the demo video" }),
   ).not.toBeInTheDocument();
@@ -167,21 +174,25 @@ function expectUnavailable() {
 describe("DemoStage", () => {
   it("shows its poster without importing the 3D module", async () => {
     await mount();
+    expect(document.querySelector(".demo-poster")).not.toBeNull();
     expect(
-      screen.getByRole("button", { name: "Play interactive demo" }),
-    ).toBeInTheDocument();
+      screen.queryByRole("button", { name: "Play interactive demo" }),
+    ).not.toBeInTheDocument();
     expect(load).not.toHaveBeenCalled();
   });
 
-  it("loads on play and preserves focus when the poster disappears", async () => {
+  it("loads from the hero request and focuses the live stage", async () => {
     const { onLive } = await mount();
-    const play = screen.getByRole("button", { name: "Play interactive demo" });
+    const play = document.createElement("button");
+    play.id = "hero-demo-play";
+    play.setAttribute("aria-controls", "interactive-demo");
+    document.body.append(play);
     play.focus();
-    fireEvent.click(play);
-    const loading = screen.getByRole("button", { name: /Loading demo/ });
-    expect(loading).toHaveAttribute("aria-disabled", "true");
-    expect(loading).not.toBeDisabled();
-    expect(loading).toHaveFocus();
+    requestStrike();
+    expect(document.querySelector("#interactive-demo")).toHaveAttribute(
+      "data-phase",
+      "loading",
+    );
     await finishLoading();
     await waitFor(() =>
       expect(document.querySelector("#interactive-demo")).toHaveAttribute(
@@ -192,7 +203,8 @@ describe("DemoStage", () => {
     expect(document.querySelector("#interactive-demo")).toHaveFocus();
     expect(load).toHaveBeenCalledTimes(1);
     expect(onLive).toHaveBeenCalledTimes(1);
-    expect(strikes).not.toHaveBeenCalled();
+    expect(strikes).toHaveBeenCalledTimes(1);
+    play.remove();
   });
 
   it("queues one strike before load, even in StrictMode, then accepts live requests", async () => {
@@ -380,9 +392,10 @@ describe("hero preview and demo exit", () => {
     fireEvent.error(document.querySelector("video")!);
     visibility(1);
     expect(mediaPlay).not.toHaveBeenCalled();
-    expect(
-      screen.getByRole("button", { name: "Play interactive demo" }),
-    ).toBeEnabled();
+    expect(document.querySelector("#interactive-demo")).toHaveAttribute(
+      "data-phase",
+      "poster",
+    );
   });
   it("waits for a rendered frame, crossfades, releases sources and disconnects playback observation", async () => {
     autoFrame = false;
@@ -416,6 +429,9 @@ describe("hero preview and demo exit", () => {
     ).toBeInTheDocument();
   });
   it("Stop during loading ignores the late module and clears its queued strike", async () => {
+    const play = document.createElement("button");
+    play.id = "hero-demo-play";
+    document.body.append(play);
     const { onLive, onStop } = await mount();
     requestStrike();
     const stop = screen.getByRole("button", { name: "Stop demo" });
@@ -426,14 +442,11 @@ describe("hero preview and demo exit", () => {
       "data-phase",
       "poster",
     );
-    await waitFor(() =>
-      expect(
-        screen.getByRole("button", { name: "Play interactive demo" }),
-      ).toHaveFocus(),
-    );
+    await waitFor(() => expect(play).toHaveFocus());
     expect(strikes).not.toHaveBeenCalled();
     expect(onLive).not.toHaveBeenCalled();
     expect(onStop).toHaveBeenCalledTimes(1);
+    play.remove();
   });
   it("Stop live restores media and restart accepts only its new strike", async () => {
     const { onStop } = await mount();

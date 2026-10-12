@@ -46,7 +46,7 @@ import {
 } from "@/components/art/PortfolioArtwork";
 import { PageCursor } from "@/components/PageCursor";
 import { LiquidGlass } from "@/components/glass/LiquidGlass";
-import { DemoStage } from "@/components/DemoStage";
+import { DemoStage, type DemoPhase } from "@/components/DemoStage";
 import { LayeredGlassAsset } from "@/components/glass/LayeredGlassAsset";
 import { AnimatedCounter } from "@/components/motion/AnimatedCounter";
 import { DetailDialog } from "@/components/detail/DetailDialog";
@@ -198,6 +198,20 @@ function detailKey(detail: ActiveDetail) {
   return `${detail.kind}:${detail.item.slug}`;
 }
 
+function fallbackDetailFocus(detail: ActiveDetail | null) {
+  if (!detail) return null;
+  const section = document.getElementById(
+    detail.kind === "project"
+      ? "projects"
+      : detail.kind === "learning"
+        ? "learning"
+        : "tools",
+  );
+  const target = section?.querySelector<HTMLElement>("h2") ?? section;
+  target?.setAttribute("tabindex", "-1");
+  return target;
+}
+
 function clampTextScale(value: number) {
   return Math.min(1.25, Math.max(0.95, value));
 }
@@ -223,7 +237,7 @@ function capabilityDetail(capability: Capability): ActiveDetail {
       : "This capability is represented in the documented portfolio work.",
     technologies: capability.technologies,
     detail: {
-      scope: `Explains how ${capability.title.toLowerCase()} appears across Kalyan's documented projects and tool systems.`,
+      scope: `Explains how ${capability.title.toLowerCase()} appears across my documented projects and tool systems.`,
       constraints: [
         "The explanation stays public-safe and avoids private source, credentials, unreleased commercial material, or former-employer implementation details.",
         "Project evidence is described only at the level currently documented in the portfolio.",
@@ -385,9 +399,18 @@ function Portfolio() {
   const pageRef = useRef<HTMLDivElement>(null);
   const projectTrackRef = useRef<HTMLDivElement>(null);
   const detailTriggerRef = useRef<HTMLElement | null>(null);
+  const activeDetailRef = useRef<ActiveDetail | null>(null);
+  const closedDetailRef = useRef<ActiveDetail | null>(null);
   const quickLookTimerRef = useRef<number | null>(null);
+  const quickLookCloseTimerRef = useRef<number | null>(null);
+  const quickLookDismissedRef = useRef<string | null>(null);
+  const quickLookPointerFocusRef = useRef<HTMLElement | null>(null);
+  const quickLookSuppressFocusRef = useRef<HTMLElement | null>(null);
+  const detailRestoreTokenRef = useRef(0);
+  const detailBlocksQuickLookRef = useRef(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [demoLive, setDemoLive] = useState(false);
+  const [demoPhase, setDemoPhase] = useState<DemoPhase>("poster");
   const [introHidden, setIntroHidden] = useState(false);
   // On desktop the intro panel covers the demo, so it steps aside once the
   // demo is running; the toggle brings it back.
@@ -399,6 +422,10 @@ function Portfolio() {
     setDemoLive(false);
     setIntroHidden(false);
   }, []);
+  const handleHeroPlay = useCallback(() => {
+    if (demoPhase === "loading" || demoPhase === "unavailable") return;
+    window.dispatchEvent(new Event(DEMO_PLAY_REQUEST_EVENT));
+  }, [demoPhase]);
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [pageVisible, setPageVisible] = useState(() =>
     typeof document === "undefined" ? true : !document.hidden,
@@ -431,6 +458,13 @@ function Portfolio() {
   });
 
   const activeSection = useSectionObserver(observedSectionIds);
+  const demoLoading = demoPhase === "loading";
+  const demoUnavailable = demoPhase === "unavailable";
+  const heroDemoStatus = demoLoading
+    ? "Loading the interactive demo."
+    : demoUnavailable
+      ? "The interactive demo is unavailable on this device."
+      : "";
 
   const standaloneProducts = useMemo(
     () =>
@@ -462,30 +496,65 @@ function Portfolio() {
     [],
   );
 
-  const openDetail = useCallback((detail: ActiveDetail) => {
-    if (document.activeElement instanceof HTMLElement) {
-      detailTriggerRef.current = document.activeElement;
-    }
-    setQuickLook(null);
-    setActiveDetail(detail);
-  }, []);
-
-  const closeDetail = useCallback(() => {
-    const trigger = detailTriggerRef.current;
-    setActiveDetail(null);
-    window.requestAnimationFrame(() => trigger?.focus());
-  }, []);
-
   const clearQuickLookTimer = useCallback(() => {
     if (quickLookTimerRef.current === null) return;
     window.clearTimeout(quickLookTimerRef.current);
     quickLookTimerRef.current = null;
   }, []);
 
-  const closeQuickLook = useCallback(() => {
+  const clearQuickLookCloseTimer = useCallback(() => {
+    if (quickLookCloseTimerRef.current === null) return;
+    window.clearTimeout(quickLookCloseTimerRef.current);
+    quickLookCloseTimerRef.current = null;
+  }, []);
+
+  const openDetail = useCallback(
+    (detail: ActiveDetail, trigger?: HTMLElement) => {
+      detailRestoreTokenRef.current++;
+      detailBlocksQuickLookRef.current = true;
+      closedDetailRef.current = null;
+      clearQuickLookTimer();
+      clearQuickLookCloseTimer();
+      detailTriggerRef.current =
+        trigger ??
+        (document.activeElement instanceof HTMLElement
+          ? document.activeElement
+          : null);
+      setQuickLook(null);
+      setActiveDetail(detail);
+    },
+    [clearQuickLookCloseTimer, clearQuickLookTimer],
+  );
+
+  const closeDetail = useCallback(() => {
+    detailRestoreTokenRef.current++;
+    detailBlocksQuickLookRef.current = true;
+    closedDetailRef.current = activeDetailRef.current;
     clearQuickLookTimer();
+    clearQuickLookCloseTimer();
     setQuickLook(null);
-  }, [clearQuickLookTimer]);
+    setActiveDetail(null);
+  }, [clearQuickLookCloseTimer, clearQuickLookTimer]);
+
+  const closeQuickLook = useCallback(
+    (dismiss = false) => {
+      clearQuickLookTimer();
+      clearQuickLookCloseTimer();
+      if (dismiss && quickLook)
+        quickLookDismissedRef.current = detailKey(quickLook.detail);
+      setQuickLook(null);
+    },
+    [clearQuickLookCloseTimer, clearQuickLookTimer, quickLook],
+  );
+
+  const scheduleDesktopQuickLookClose = useCallback(() => {
+    clearQuickLookTimer();
+    clearQuickLookCloseTimer();
+    quickLookCloseTimerRef.current = window.setTimeout(() => {
+      quickLookCloseTimerRef.current = null;
+      setQuickLook((current) => (current?.mode === "desktop" ? null : current));
+    }, 120);
+  }, [clearQuickLookCloseTimer, clearQuickLookTimer]);
 
   const showQuickLook = useCallback(
     (
@@ -494,15 +563,19 @@ function Portfolio() {
       mode: QuickLookState["mode"],
       delay = 0,
     ) => {
+      if (activeDetail || detailBlocksQuickLookRef.current) return;
+      if (quickLookDismissedRef.current === detailKey(detail)) return;
       clearQuickLookTimer();
+      clearQuickLookCloseTimer();
       const commit = () => {
         quickLookTimerRef.current = null;
+        if (activeDetailRef.current || detailBlocksQuickLookRef.current) return;
         setQuickLook({ detail, anchor, mode });
       };
       if (delay === 0) commit();
       else quickLookTimerRef.current = window.setTimeout(commit, delay);
     },
-    [clearQuickLookTimer],
+    [activeDetail, clearQuickLookCloseTimer, clearQuickLookTimer],
   );
 
   const openMobileQuickLook = useCallback(
@@ -527,7 +600,12 @@ function Portfolio() {
         if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
           return;
         }
+        quickLookDismissedRef.current = null;
+        clearQuickLookCloseTimer();
         showQuickLook(detail, event.currentTarget, "desktop", 180);
+      },
+      onPointerDown: (event: React.PointerEvent<HTMLElement>) => {
+        quickLookPointerFocusRef.current = event.currentTarget;
       },
       onPointerMove: (event: React.PointerEvent<HTMLElement>) => {
         if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
@@ -542,14 +620,20 @@ function Portfolio() {
       onPointerLeave: (event: React.PointerEvent<HTMLElement>) => {
         event.currentTarget.style.removeProperty("--pointer-x");
         event.currentTarget.style.removeProperty("--pointer-y");
-        clearQuickLookTimer();
-        if (quickLook?.mode === "desktop") setQuickLook(null);
+        quickLookPointerFocusRef.current = null;
+        scheduleDesktopQuickLookClose();
       },
-      onFocus: (event: React.FocusEvent<HTMLElement>) =>
-        showQuickLook(detail, event.currentTarget, "desktop"),
+      onFocus: (event: React.FocusEvent<HTMLElement>) => {
+        if (quickLookSuppressFocusRef.current === event.currentTarget) {
+          quickLookSuppressFocusRef.current = null;
+          return;
+        }
+        if (quickLookPointerFocusRef.current === event.currentTarget) return;
+        quickLookDismissedRef.current = null;
+        showQuickLook(detail, event.currentTarget, "desktop");
+      },
       onBlur: () => {
-        clearQuickLookTimer();
-        if (quickLook?.mode === "desktop") setQuickLook(null);
+        scheduleDesktopQuickLookClose();
       },
     };
   };
@@ -557,6 +641,43 @@ function Portfolio() {
   const isMobileQuickLookOpen = (detail: ActiveDetail) =>
     quickLook?.mode === "mobile" &&
     detailKey(quickLook.detail) === detailKey(detail);
+
+  useEffect(() => {
+    activeDetailRef.current = activeDetail;
+  }, [activeDetail]);
+
+  useEffect(() => {
+    return () => {
+      clearQuickLookTimer();
+      clearQuickLookCloseTimer();
+    };
+  }, [clearQuickLookCloseTimer, clearQuickLookTimer]);
+
+  const restoreDetailFocus = useCallback(() => {
+    const token = detailRestoreTokenRef.current;
+    const trigger = detailTriggerRef.current;
+    const target =
+      trigger?.isConnected === true
+        ? trigger
+        : fallbackDetailFocus(closedDetailRef.current);
+    if (!target) {
+      detailBlocksQuickLookRef.current = false;
+      return;
+    }
+    quickLookSuppressFocusRef.current = target;
+    window.requestAnimationFrame(() => {
+      if (token !== detailRestoreTokenRef.current) return;
+      target.focus({ preventScroll: true });
+      window.requestAnimationFrame(() => {
+        if (quickLookSuppressFocusRef.current === target) {
+          quickLookSuppressFocusRef.current = null;
+        }
+        if (token === detailRestoreTokenRef.current) {
+          detailBlocksQuickLookRef.current = false;
+        }
+      });
+    });
+  }, []);
 
   useEffect(() => {
     let frame = 0;
@@ -622,10 +743,6 @@ function Portfolio() {
     window.addEventListener("keydown", closeOverlays);
     return () => window.removeEventListener("keydown", closeOverlays);
   }, [closeQuickLook]);
-
-  useEffect(() => {
-    return clearQuickLookTimer;
-  }, [clearQuickLookTimer]);
 
   useGSAP(
     () => {
@@ -797,7 +914,7 @@ function Portfolio() {
 
   const contactHref = (kind: "role" | "project") => {
     const subject =
-      kind === "role" ? "Role opportunity for Kalyan" : "Project collaboration";
+      kind === "role" ? "Role opportunity" : "Project collaboration";
     return `mailto:${profile.email ?? ""}?subject=${encodeURIComponent(subject)}`;
   };
 
@@ -944,6 +1061,8 @@ function Portfolio() {
                 darkMode={theme === "dark"}
                 onLive={handleDemoLive}
                 onStop={handleDemoStop}
+                onPhaseChange={setDemoPhase}
+                focusReturnId="hero-demo-play"
               />
             </LayeredGlassAsset>
             <LayeredGlassAsset
@@ -979,16 +1098,6 @@ function Portfolio() {
                 extend.
               </p>
               <div className="hero-cta-row" data-hero-support>
-                <button
-                  className="button primary"
-                  type="button"
-                  aria-controls="interactive-demo"
-                  onClick={() =>
-                    window.dispatchEvent(new Event(DEMO_PLAY_REQUEST_EVENT))
-                  }
-                >
-                  <Play aria-hidden="true" /> Play interactive demo
-                </button>
                 {profile.resumePdfHref ? (
                   <a
                     className="button secondary"
@@ -1002,12 +1111,28 @@ function Portfolio() {
                 <a className="button secondary" href="#projects">
                   View projects <ArrowRight />
                 </a>
+                <button
+                  id="hero-demo-play"
+                  className="button primary"
+                  type="button"
+                  aria-controls="interactive-demo"
+                  aria-disabled={demoLoading || demoUnavailable}
+                  aria-busy={demoLoading}
+                  onClick={handleHeroPlay}
+                >
+                  <Play aria-hidden="true" />{" "}
+                  {demoLoading
+                    ? "Loading demo..."
+                    : demoUnavailable
+                      ? "Demo unavailable"
+                      : "Play interactive demo"}
+                </button>
               </div>
-              <div className="hero-engine-status" data-hero-support>
-                <Layers3 aria-hidden="true" />
-                <span>Live Three.js + Rapier simulation</span>
-                <a href="#experience">View resume</a>
-              </div>
+              {heroDemoStatus ? (
+                <p className="hero-demo-status" data-hero-support>
+                  {heroDemoStatus}
+                </p>
+              ) : null}
             </LayeredGlassAsset>
             {demoLive ? (
               <button
@@ -1074,7 +1199,9 @@ function Portfolio() {
                       className="project-card-action"
                       type="button"
                       {...quickLookBindings(detail)}
-                      onClick={() => openDetail(detail)}
+                      onClick={(event) =>
+                        openDetail(detail, event.currentTarget)
+                      }
                     >
                       <ProjectArtwork project={project} />
                       <span className="project-card-body">
@@ -1162,7 +1289,7 @@ function Portfolio() {
                     className="capability-card"
                     type="button"
                     {...quickLookBindings(detail)}
-                    onClick={() => openDetail(detail)}
+                    onClick={(event) => openDetail(detail, event.currentTarget)}
                   >
                     <Icon aria-hidden="true" />
                     <div>
@@ -1225,7 +1352,9 @@ function Portfolio() {
                         type="button"
                         className="standalone-product"
                         {...quickLookBindings(detail)}
-                        onClick={() => openDetail(detail)}
+                        onClick={(event) =>
+                          openDetail(detail, event.currentTarget)
+                        }
                       >
                         <ProjectArtwork project={project} />
                         <span>
@@ -1260,7 +1389,9 @@ function Portfolio() {
                           type="button"
                           className="tool-suite-card"
                           {...quickLookBindings(detail)}
-                          onClick={() => openDetail(detail)}
+                          onClick={(event) =>
+                            openDetail(detail, event.currentTarget)
+                          }
                         >
                           <PortfolioArtwork
                             variant={artwork}
@@ -1322,7 +1453,9 @@ function Portfolio() {
                               type="button"
                               className="utility-item"
                               {...quickLookBindings(detail)}
-                              onClick={() => openDetail(detail)}
+                              onClick={(event) =>
+                                openDetail(detail, event.currentTarget)
+                              }
                             >
                               <Wrench aria-hidden="true" />
                               <div>
@@ -1360,7 +1493,9 @@ function Portfolio() {
                         type="button"
                         className="game-system-card"
                         {...quickLookBindings(detail)}
-                        onClick={() => openDetail(detail)}
+                        onClick={(event) =>
+                          openDetail(detail, event.currentTarget)
+                        }
                       >
                         <span>{String(index + 1).padStart(2, "0")}</span>
                         <PortfolioArtwork
@@ -1443,7 +1578,7 @@ function Portfolio() {
                     type="button"
                     key={project.slug}
                     {...quickLookBindings(detail)}
-                    onClick={() => openDetail(detail)}
+                    onClick={(event) => openDetail(detail, event.currentTarget)}
                   >
                     <Check /> {project.name}
                     <small>{project.platform}</small>
@@ -1519,7 +1654,7 @@ function Portfolio() {
                     type="button"
                     className="learning-card"
                     {...quickLookBindings(detail)}
-                    onClick={() => openDetail(detail)}
+                    onClick={(event) => openDetail(detail, event.currentTarget)}
                   >
                     <div className="learning-visual" aria-hidden="true">
                       <PortfolioArtwork
@@ -1563,7 +1698,7 @@ function Portfolio() {
                     type="button"
                     className="learning-card"
                     {...quickLookBindings(detail)}
-                    onClick={() => openDetail(detail)}
+                    onClick={(event) => openDetail(detail, event.currentTarget)}
                   >
                     <div className="learning-visual" aria-hidden="true">
                       <PortfolioArtwork
@@ -1684,8 +1819,17 @@ function Portfolio() {
           </div>
         </LayeredGlassAsset>
       </footer>
-      <DetailDialog activeDetail={activeDetail} onClose={closeDetail} />
-      <QuickLook state={quickLook} onClose={closeQuickLook} />
+      <DetailDialog
+        activeDetail={activeDetail}
+        onClose={closeDetail}
+        onAfterClose={restoreDetailFocus}
+      />
+      <QuickLook
+        state={quickLook}
+        onClose={closeQuickLook}
+        onDesktopPointerEnter={clearQuickLookCloseTimer}
+        onDesktopPointerLeave={scheduleDesktopQuickLookClose}
+      />
     </div>
   );
 }

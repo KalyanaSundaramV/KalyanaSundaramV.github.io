@@ -458,7 +458,8 @@ input:focus-visible,
 }
 
 .hero-ambient .ambient-orange {
-  background-image: url("/kalyan_glass_ui_png_pack/00_tokens/orange_glow.webp");
+  display: none;
+  background-image: none;
   background-position: 0 12%;
 }
 
@@ -585,7 +586,7 @@ input:focus-visible,
 .hero-line-mask {
   display: block;
   overflow: hidden;
-  padding: 0.04em 0 0.06em;
+  padding: 0.04em 0 0.18em;
 }
 
 .hero-line-mask > span {
@@ -624,8 +625,7 @@ input:focus-visible,
   line-height: 1.65;
 }
 
-/* Primary action on its own full-width row; secondary actions share the row
-   below at equal width, so the group keeps one left and one right edge. */
+/* Secondary actions share the top row; Play spans the row below. */
 .hero-cta-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -675,7 +675,7 @@ input:focus-visible,
 
 .button.primary {
   border-color: var(--glass-accent);
-  color: #fff;
+  color: #111;
   background: var(--glass-accent);
   box-shadow: 0 10px 26px rgb(255 120 47 / 0.32);
 }
@@ -721,6 +721,12 @@ input:focus-visible,
   margin-left: auto;
   color: var(--glass-ink);
   font-weight: 700;
+}
+
+.hero-demo-status {
+  margin: 16px 0 0;
+  color: var(--glass-muted);
+  font-size: 0.82rem;
 }
 
 .hero-scroll-cue {
@@ -2973,13 +2979,9 @@ input:focus-visible,
 }
 
 .project-card-body > span:not(.project-card-index) {
-  display: -webkit-box;
   margin-top: 13px;
-  overflow: hidden;
   font-size: 0.82rem;
   line-height: 1.5;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
 }
 
 .project-card-body i {
@@ -3154,12 +3156,8 @@ input:focus-visible,
 }
 
 .learning-card p {
-  display: -webkit-box;
-  overflow: hidden;
   font-size: 0.78rem;
   line-height: 1.5;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
 }
 
 .learning-card-footer {
@@ -3577,13 +3575,9 @@ input:focus-visible,
   }
 
   .hero-copy > p:not(.hero-eyebrow) {
-    display: -webkit-box;
     margin-top: 16px;
-    overflow: hidden;
     font-size: 0.9rem;
     line-height: 1.5;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
   }
 
   .hero-cta-row {
@@ -4044,10 +4038,7 @@ input:focus-visible,
   align-items: end;
   justify-items: end;
   padding: clamp(18px, 3vw, 40px);
-  background:
-    radial-gradient(circle at 72% 38%, rgb(255 138 61 / 0.2), transparent 42%),
-    radial-gradient(circle at 88% 78%, rgb(76 140 255 / 0.16), transparent 46%),
-    linear-gradient(160deg, #e6ecf2 0%, #d3dce6 100%);
+  background: linear-gradient(90deg, rgb(245 245 245 / 0.55), transparent 52%);
 }
 
 .demo-poster::before {
@@ -4062,10 +4053,7 @@ input:focus-visible,
 }
 
 :root[data-theme="dark"] .demo-poster {
-  background:
-    radial-gradient(circle at 72% 38%, rgb(255 138 61 / 0.16), transparent 42%),
-    radial-gradient(circle at 88% 78%, rgb(76 140 255 / 0.14), transparent 46%),
-    linear-gradient(160deg, #07090c 0%, #000 100%);
+  background: linear-gradient(90deg, rgb(8 8 8 / 0.58), transparent 56%);
 }
 
 :root[data-theme="dark"] .demo-poster::before {
@@ -4338,6 +4326,10 @@ input:focus-visible,
 /* Smallest phones (320px): the stats card drops below the live badge, and the
    time buttons share the row instead of holding a fixed width. */
 @media (max-width: 359px) {
+  .hero-copy h1 {
+    font-size: 2.45rem;
+  }
+
   .lab-stats-glass {
     top: 58px;
   }
@@ -4977,9 +4969,14 @@ body::before,
   opacity: 1;
   transform: none;
   animation: none;
+  pointer-events: auto;
   transition:
     opacity 160ms var(--glass-ease),
     transform 160ms var(--glass-ease);
+}
+
+.quick-look-popover[data-mode="desktop"] {
+  pointer-events: auto;
 }
 
 .quick-look-popover[data-state="closed"] {
@@ -5118,6 +5115,13 @@ body::before,
   -webkit-backdrop-filter: blur(16px) saturate(1.4);
 }
 
+:root[data-theme="dark"] .hero-cta-row > .button.primary {
+  color: #111;
+  background: var(--glass-accent);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 :root[data-theme="dark"] .case-study-dialog,
 :root[data-theme="dark"] .quick-look-popover {
   background:
@@ -5181,7 +5185,7 @@ body::before,
   --glass-panel-strong: rgb(255 255 255 / 0.79);
   --glass-shadow: 0 22px 60px rgb(0 0 0 / 0.12);
   --glass-shadow-soft: 0 10px 32px rgb(0 0 0 / 0.1);
-  --aurora-a: rgb(255 120 47 / 0.18);
+  --aurora-a: rgb(255 255 255 / 0.2);
   --aurora-b: rgb(255 255 255 / 0.32);
   --aurora-c: rgb(100 100 100 / 0.12);
   --accent-cool: var(--glass-accent);
@@ -5196,7 +5200,7 @@ body::before,
   --glass-panel-strong: rgb(255 255 255 / 0.1);
   --glass-shadow: 0 24px 70px rgb(0 0 0 / 0.72);
   --glass-shadow-soft: 0 12px 36px rgb(0 0 0 / 0.58);
-  --aurora-a: rgb(255 120 47 / 0.13);
+  --aurora-a: rgb(255 255 255 / 0.04);
   --aurora-b: rgb(255 255 255 / 0.055);
   --aurora-c: rgb(100 100 100 / 0.08);
 }

@@ -10,17 +10,26 @@ import { createDetailViewModel, type ActiveDetail } from "@/lib/detail";
 type DetailDialogProps = {
   activeDetail: ActiveDetail | null;
   onClose: () => void;
+  onAfterClose?: () => void;
 };
 
 export function DetailDialog({
   activeDetail: open,
   onClose,
+  onAfterClose,
 }: DetailDialogProps) {
   // Stays mounted for the exit transition; the scroll lock below follows the
   // mounted detail so the page does not shift under the fading backdrop.
-  const [activeDetail, leaving] = useExitPresence(open, 200);
+  const reducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const [activeDetail, leaving] = useExitPresence(
+    open,
+    reducedMotion ? 0 : 200,
+  );
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const hadDetail = useRef(false);
   const model = useMemo(
     () => (activeDetail ? createDetailViewModel(activeDetail) : null),
     [activeDetail],
@@ -49,6 +58,16 @@ export function DetailDialog({
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [open, onClose]);
+
+  useEffect(() => {
+    if (activeDetail) {
+      hadDetail.current = true;
+      return;
+    }
+    if (!hadDetail.current) return;
+    hadDetail.current = false;
+    onAfterClose?.();
+  }, [activeDetail, onAfterClose]);
 
   if (!activeDetail || !model) return null;
 

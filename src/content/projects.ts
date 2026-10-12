@@ -7,7 +7,7 @@ export const projects: Project[] = [
     summary:
       "A building-destruction game prototype focused on tool choice, contract goals, progression, and readable destruction feedback.",
     longSummary:
-      "Ludo Demolition is Kalyan's current solo game project. It combines contract-driven demolition, a broad tool system, destructible building parts, progression, economy hooks, procedural settlements, and mobile-focused feedback.",
+      "Ludo Demolition is my current solo game project. It combines contract-driven demolition, a broad tool system, destructible building parts, progression, economy hooks, procedural settlements, and mobile-focused feedback.",
     type: "Games",
     engine: "Unity",
     status: "Work in progress",
@@ -111,7 +111,7 @@ export const projects: Project[] = [
     summary:
       "A previously published Android action-puzzle game built around grid movement, laser alignment, transforming floors, and escalating hazards.",
     longSummary:
-      "King Cube is an earlier Unity mobile game that Kalyan published on Google Play. The surviving project shows a systems-heavy action-puzzle loop with rolling cube movement, split-and-rejoin mechanics, laser objectives, dynamic tile grids, obstacle families, first-time-user levels, pooling, and feedback orchestration.",
+      "King Cube is an earlier Unity mobile game I published on Google Play. The surviving project shows a systems-heavy action-puzzle loop with rolling cube movement, split-and-rejoin mechanics, laser objectives, dynamic tile grids, obstacle families, first-time-user levels, pooling, and feedback orchestration.",
     type: "Games",
     engine: "Unity",
     status: "Completed",
@@ -213,7 +213,7 @@ export const projects: Project[] = [
     summary:
       "A team-developed mobile board game combining local and network matches, kingdom progression, social competition, and reward mini-games.",
     longSummary:
-      "Kalyan developed Ludo Hero with three other developers and a group of artists at Qila Games. The available project indicates a broad mobile game surface: turn-based board play, local and network controllers, kingdom and village progression, wallet and energy systems, analytics, authentication, and event-driven mini-games.",
+      "I developed Ludo Hero with three other developers and a group of artists at Qila Games. The available project indicates a broad mobile game surface: turn-based board play, local and network controllers, kingdom and village progression, wallet and energy systems, analytics, authentication, and event-driven mini-games.",
     type: "Games",
     engine: "Unity",
     status: "Team project",
