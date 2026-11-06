@@ -8,7 +8,7 @@ const ctx=canvas.getContext("2d",{alpha:true,desynchronized:true});
 if(!ctx)return;
 const low=matchMedia("(pointer:coarse)").matches;
 let ratio=1,w=0,h=0,last=0,particles=[],pointer={x:-999,y:-999},color="#D73139",frame=0;
-const count=low?37:104;
+const count=low?18:104;
 const random=(a,b)=>a+Math.random()*(b-a);
 function reset(p,initial=false){
  p.x=random(0,w);p.y=random(0,h);p.age=0;p.max=random(90,270);
@@ -28,7 +28,7 @@ window.addEventListener("resize",resize,{passive:true});
 window.addEventListener("pointermove",e=>{pointer.x=e.clientX;pointer.y=e.clientY},{passive:true});
 function tick(t){
  requestAnimationFrame(tick);
- if(document.hidden || t-last<(low?38:24))return;
+ if(document.hidden || document.body.classList.contains("mobile-demo-focus") || t-last<(low?66:24))return;
  last=t;frame++;
  ctx.clearRect(0,0,w,h);
  const newColor=getComputedStyle(document.body).getPropertyValue("--accent-hot").trim();

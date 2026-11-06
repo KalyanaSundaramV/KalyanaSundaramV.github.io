@@ -4,6 +4,7 @@
 "use strict";
 const reduced=matchMedia("(prefers-reduced-motion: reduce)");
 const fine=matchMedia("(hover: hover) and (pointer: fine)");
+const mobileFx=matchMedia("(pointer:coarse) and (max-width:1100px)").matches;
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const rgba=(hex)=>{const s=hex.replace("#","");return [0,2,4].map(i=>parseInt(s.slice(i,i+2),16)/255)};
 const rgbCss=(hex,a=1)=>{const c=rgba(hex).map(v=>Math.round(v*255));return `rgba(${c.join(",")},${a})`};
@@ -233,7 +234,7 @@ function drawFallback(progress,fx){
 // Draws only near the moving wavefront; the portfolio is visible underneath.
 const reliefCtx=canvas.getContext("2d",{alpha:true,desynchronized:true});
 function reliefResize(){
-  const scale=Math.min(devicePixelRatio||1,1.25);
+  const scale=mobileFx?1:Math.min(devicePixelRatio||1,1.25);
   canvas.width=Math.max(1,Math.round(innerWidth*scale));
   canvas.height=Math.max(1,Math.round(innerHeight*scale));
 }
@@ -304,7 +305,7 @@ window.ThemeFlux={
     holder.dataset.effect=String(mode);
     reliefResize();
     const config={accent,bg,origin,mode,seed};
-    let started=performance.now(),fired=false,id=0,dead=false;
+    let started=performance.now(),fired=false,id=0,dead=false,lastPaint=0;
     const cleanup=()=>{
       dead=true;
       cancelAnimationFrame(id);
@@ -315,8 +316,10 @@ window.ThemeFlux={
     const handle={cancel:()=>{if(!fired){fired=true;onMid();}cleanup();}};
     const tick=now=>{
       if(dead)return;
-      const p=clamp((now-started)/740,0,1);
+      const p=clamp((now-started)/(mobileFx?490:740),0,1);
       if(p>=.44&&!fired){fired=true;onMid();}
+      if(mobileFx && p<1 && now-lastPaint<32){id=requestAnimationFrame(tick);return;}
+      lastPaint=now;
       paintRelief(p,config);
       if(p<1)id=requestAnimationFrame(tick);
       else{cleanup();onEnd();}

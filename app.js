@@ -167,7 +167,7 @@
   }
   function initTheme(){
     let saved;try{saved=localStorage.getItem("ksv-theme")}catch(e){}
-    applyTheme(themes.some(t=>t.id===saved)?saved:"crimson");
+    applyTheme(themes.some(t=>t.id===saved)?saved:"lava");
     $("#theme-orb").addEventListener("click",()=>{
       closeLiquid();
       const open=!$("#theme-menu").classList.contains("open");
@@ -707,20 +707,21 @@
   }
   function initParticles(){
     if(prefersReduced.matches)return;
+    const mobileFx=matchMedia("(pointer:coarse) and (max-width:1100px)").matches;
     particleCanvas=$("#particle-canvas");particleCtx=particleCanvas.getContext("2d",{alpha:true});
     const resize=()=>{
-      const rect=particleCanvas.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);
+      const rect=particleCanvas.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,mobileFx?1:2);
       particleWidth=rect.width;particleHeight=rect.height;
       particleCanvas.width=Math.round(particleWidth*dpr);particleCanvas.height=Math.round(particleHeight*dpr);
       particleCtx.setTransform(dpr,0,0,dpr,0,0);
-      const count=Math.min(100,Math.max(30,Math.round(particleWidth*particleHeight/14000)));
+      const count=mobileFx?18:Math.min(100,Math.max(30,Math.round(particleWidth*particleHeight/14000)));
       particles=Array.from({length:count},()=>({x:Math.random()*particleWidth,y:Math.random()*particleHeight,r:Math.random()*1.3+.28,vy:(Math.random()-.5)*.2,vx:(Math.random()-.5)*.16,alpha:Math.random()*.5+.2}));
     };
     window.addEventListener("resize",resize,{passive:true});resize();
     let last=0;
     function frame(t){
       requestAnimationFrame(frame);
-      if(document.hidden || t-last<33)return;last=t;
+      if(document.hidden || document.body.classList.contains("mobile-demo-focus") || t-last<(mobileFx?66:33))return;last=t;
       particleCtx.clearRect(0,0,particleWidth,particleHeight);
       particleCtx.fillStyle=particleColor;
       for(const pt of particles){

@@ -302,7 +302,7 @@ test("keeps the portfolio content and adds the interactive destruction experienc
   assert.match(originalReactHtml, /JetBrains\+Mono/);
   assert.match(originalReactHtml, /Space\+Grotesk/);
   // Keep validating that Pages serves the built static portfolio instead of Vite.
-  assert.match(html, /src="original-3d-demo\.js"/);
+  assert.match(html, /src="original-3d-demo\.js(?:\?[^"]*)?"/);
   assert.doesNotMatch(html, /\/src\/main\.tsx/);
   // The PNG frame layers are gone, so the old hero frame preload must be too.
   assert.doesNotMatch(html, /hero_demo_frame__surface@2x\.png/);

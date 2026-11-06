@@ -1143,12 +1143,12 @@ body.liquid-pointer-ready a,body.liquid-pointer-ready [role="button"]{cursor:non
 
 /* ═══════════════════ FLUID V2 — THEME LIBRARY ═══════════════════ */
 body[data-theme="lava"]{
- --bg:#151419;--bg2:#201711;--ink:#FBFBFB;--muted:#aaa8aa;
- --accent:#F56E0F;--accent-hot:#ff841f;--contrast:#151419;
- --panel:rgba(27,27,30,.57);--panel-strong:rgba(28,28,30,.87);
+ --bg:#151419;--bg2:#1B1B1E;--ink:#FBFBFB;--muted:#878787;
+ --accent:#F56E0F;--accent-hot:#F56E0F;--contrast:#151419;
+ --panel:rgba(27,27,30,.68);--panel-strong:rgba(27,27,30,.92);
  --border:rgba(245,110,15,.24);--border-strong:rgba(245,110,15,.56);
- --glow1:rgba(245,110,15,.30);--glow2:rgba(255,166,74,.16);
- --noise-opacity:.14;--chip-bg:rgba(38,38,38,.62);--field:#F56E0F;
+ --glow1:rgba(245,110,15,.30);--glow2:rgba(245,110,15,.16);
+ --noise-opacity:.14;--chip-bg:rgba(38,38,38,.80);--field:#F56E0F;
 }
 body[data-theme="netflix"]{
  --bg:#221F1F;--bg2:#111010;--ink:#F5F5F1;--muted:#b2aaa8;
@@ -1948,3 +1948,109 @@ button.education:hover,button.education:focus-visible{border-color:var(--accent-
 @media(max-width:1000px){.engineering-values-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.engineering-values-grid,.restored-status{grid-template-columns:1fr}.engineering-value{min-height:auto}.original-development-timeline li{grid-template-columns:1fr;gap:5px}.original-media-head>span:last-child{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.engineering-value{transition:none}.engineering-value:hover{transform:none}}
+
+/* KSV MOBILE GPU SAFETY: suppress expensive compositing over WebGL. */
+body.original-demo-active .original-demo-backdrop {
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  background:rgba(0,1,7,.96)!important;
+}
+body.original-demo-active .bg-atmosphere,
+body.original-demo-active .section-orbit {visibility:hidden!important}
+@media (pointer:coarse) and (max-width:1100px) {
+  .glass,.nav-shell,.theme-menu,.modal-panel,.original-demo-panel,
+  .theme-transition.tile-running .theme-transition-copy strong {
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  .nav-shell,.theme-menu,.modal-panel {background:var(--panel-strong)}
+  .original-demo-panel {box-shadow:none!important}
+}
+
+/* KSV MOBILE DEMO FOCUS: the full desktop portfolio remains unchanged.
+   On phones, stop compositing background UI and reserve the viewport for
+   the original Three.js + Rapier iframe. Closing restores every page layer. */
+@media (pointer: coarse) and (max-width: 1100px) {
+  body.mobile-demo-focus {
+    overflow: hidden !important;
+    overscroll-behavior: none;
+    background: #151419;
+  }
+  body.mobile-demo-focus > :not(#original-3d-demo) {
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  body.mobile-demo-focus > :not(#original-3d-demo),
+  body.mobile-demo-focus > :not(#original-3d-demo) *,
+  body.mobile-demo-focus > :not(#original-3d-demo) *::before,
+  body.mobile-demo-focus > :not(#original-3d-demo) *::after {
+    animation-play-state: paused !important;
+    transition: none !important;
+  }
+  body.mobile-demo-focus #original-3d-demo {
+    display: block !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    margin: 0 !important;
+    max-width: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: none !important;
+    background: #151419;
+  }
+  body.mobile-demo-focus .original-demo-backdrop {
+    display: none !important;
+  }
+  body.mobile-demo-focus .original-demo-panel {
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    transition: none !important;
+    background: #151419;
+  }
+  body.mobile-demo-focus .original-demo-toolbar {
+    flex: none;
+    min-height: 48px !important;
+    padding: 7px 12px !important;
+    background: #1B1B1E !important;
+    border-bottom: 1px solid #262626;
+  }
+  body.mobile-demo-focus .original-demo-brand strong {
+    font-size: 12px;
+  }
+  body.mobile-demo-focus .original-demo-foot {
+    display: none !important;
+  }
+  body.mobile-demo-focus .original-demo-viewport {
+    flex: 1;
+    min-height: 0 !important;
+    overflow: hidden;
+    background: #151419;
+  }
+  body.mobile-demo-focus #original-demo-frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+}
+  /* Preserve the original laptop backdrop and animated portfolio underneath
+     the demo overlay. The mobile focus class above is never added on desktop. */
+  @media (hover: hover) and (pointer: fine) {
+    body.original-demo-active .original-demo-backdrop {
+      backdrop-filter: blur(17px) !important;
+      -webkit-backdrop-filter: blur(17px) !important;
+      background: rgba(0, 1, 7, .84) !important;
+    }
+    body.original-demo-active .bg-atmosphere,
+    body.original-demo-active .section-orbit {
+      visibility: visible !important;
+    }
+  }

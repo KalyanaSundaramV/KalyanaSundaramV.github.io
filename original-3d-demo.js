@@ -10,6 +10,7 @@
   const status = document.getElementById("original-demo-status");
   const fullscreenButton = document.getElementById("original-demo-fullscreen");
   const fullscreenPanel = overlay?.querySelector(".original-demo-panel");
+  const mobileGameMode = () => window.matchMedia("(pointer:coarse) and (max-width:1100px)").matches;
   if (!overlay || !frame) return;
   let focusReturn = null, open = false, generation = 0, timeout = 0;
   let fullscreenWasActive = false, fullscreenExitedAt = -Infinity;
@@ -22,6 +23,7 @@
     overlay.setAttribute("aria-hidden", "true");
     overlay.setAttribute("inert", "");
     document.body.classList.remove("original-demo-active");
+    document.body.classList.remove("mobile-demo-focus");
     if(document.fullscreenElement===fullscreenPanel){
       document.exitFullscreen?.().catch(()=>{});
     }
@@ -40,6 +42,7 @@
     overlay.setAttribute("aria-hidden", "false");
     overlay.classList.add("open");
     document.body.classList.add("original-demo-active");
+    if (mobileGameMode()) document.body.classList.add("mobile-demo-focus");
     loading.hidden = false;
     error.hidden = true;
     status.textContent = "LOADING SOURCE…";
@@ -78,6 +81,14 @@
       }
     }, 17000);
     frame.src = "demo-original.html?embed=1";
+    // A phone may allow immersive fullscreen from this direct user click.
+    // If denied (or unsupported), the CSS game-focus fallback is still edge-to-edge.
+    if (mobileGameMode() && fullscreenPanel?.requestFullscreen) {
+      try {
+        const fullscreenRequest = fullscreenPanel.requestFullscreen({ navigationUI: "hide" });
+        fullscreenRequest?.catch?.(() => {});
+      } catch (_) { /* Fallback: viewport-filling overlay */ }
+    }
   }
   document.addEventListener("click", event => {
     if(event.target.closest("[data-open-demo]"))openDemo();
