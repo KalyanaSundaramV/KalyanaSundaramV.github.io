@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint . --ignore-pattern dist",
+    "lint": "eslint src tests --ignore-pattern dist",
     "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json",
     "test": "pnpm test:content && pnpm test:ui",
     "test:content": "node --test tests/site.test.mjs",
