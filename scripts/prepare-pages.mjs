@@ -4,10 +4,11 @@
  * and the original editable React demo remain in the Git repository.
  * This build targets the root user site kalyanasundaramv.github.io.
  */
-import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync, statSync } from 'node:fs';
-import { resolve, join } from 'node:path';
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync, statSync } from 'node:fs';
+import { dirname, resolve, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = resolve(import.meta.dirname, '..');
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root, '_site');
 
 const files = [
@@ -27,6 +28,13 @@ const files = [
   'source-tools-catalog.js',
   'typography-motion.js',
 ];
+
+// The published homepage is the prebuilt root index.html, not the Vite source
+// entrypoint under original-3d-react-source/. Fail rather than deploy raw TSX.
+const homepage = readFileSync(join(root, 'index.html'), 'utf8');
+if (/(?:\/src\/main\.(?:tsx?|jsx?)|\/@vite\/client)/i.test(homepage)) {
+  throw new Error('Refusing to publish an unbuilt Vite development entrypoint.');
+}
 
 const folders = ['assets', 'kalyan_glass_ui_png_pack', 'media', 'resume'];
 for (const relative of [...files, ...folders]) {

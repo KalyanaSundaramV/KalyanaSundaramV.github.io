@@ -12,7 +12,7 @@ export function useExitPresence<T>(
   const [held, setHeld] = useState<T | null>(value);
 
   useEffect(() => {
-    if (value) {
+    if (value !== null) {
       setHeld(value);
       return;
     }
@@ -25,5 +25,5 @@ export function useExitPresence<T>(
   }, [value, ms]);
 
   const shown = value ?? held;
-  return [shown, !value && shown !== null];
+  return [shown, value === null && shown !== null];
 }
