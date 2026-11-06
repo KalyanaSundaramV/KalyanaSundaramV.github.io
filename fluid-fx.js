@@ -4,7 +4,7 @@
 "use strict";
 const reduced=matchMedia("(prefers-reduced-motion: reduce)");
 const fine=matchMedia("(hover: hover) and (pointer: fine)");
-const mobileFx=matchMedia("(pointer:coarse) and (max-width:1100px)").matches;
+const mobileFx=matchMedia("(pointer:coarse) and (max-width:1100px)");
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const rgba=(hex)=>{const s=hex.replace("#","");return [0,2,4].map(i=>parseInt(s.slice(i,i+2),16)/255)};
 const rgbCss=(hex,a=1)=>{const c=rgba(hex).map(v=>Math.round(v*255));return `rgba(${c.join(",")},${a})`};
