@@ -269,7 +269,7 @@
   }
   canvas.classList.add("webgl-ready");
   requestAnimationFrame(frame);
-  const clean=()=>{active=false;};
+  const clean=()=>{if(!active)return;active=false;try{gl.getExtension("WEBGL_lose_context")?.loseContext();}catch(_){}};
   new MutationObserver(()=>{if(!loader.isConnected || loader.classList.contains("hiding"))clean()})
     .observe(loader,{attributes:true,attributeFilter:["class"]});
   window.addEventListener("pagehide",clean,{once:true});

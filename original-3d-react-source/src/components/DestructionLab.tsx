@@ -339,6 +339,11 @@ function distanceToPart(point: Vec3, part: BuildingPartSpec) {
   return Math.hypot(dx, dy, dz);
 }
 
+const compactWebGL = () =>
+  typeof window !== "undefined" &&
+  typeof window.matchMedia === "function" &&
+  window.matchMedia("(pointer:coarse) and (max-width:1100px)").matches;
+
 const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -3673,8 +3678,8 @@ function DestructionScene({
         penumbra={0.85}
         decay={0}
         distance={0}
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
+        shadow-mapSize-width={compactWebGL() ? 1024 : 2048}
+        shadow-mapSize-height={compactWebGL() ? 1024 : 2048}
         shadow-bias={-0.0004}
         shadow-normalBias={0.03}
         shadow-camera-near={10}
@@ -4186,14 +4191,14 @@ export function DestructionLab({
           <Canvas
             orthographic
             shadows="basic"
-            dpr={[1, 1.4]}
+            dpr={compactWebGL() ? 1 : [1, 1.4]}
             camera={{
               position: [24, 15, 28],
               zoom: 6.5,
               near: CAMERA_NEAR_CLIP,
               far: 500,
             }}
-            gl={{ antialias: true, powerPreference: "high-performance" }}
+            gl={{ antialias: !compactWebGL(), powerPreference: "high-performance" }}
             onCreated={({ gl }) => {
               canvasRef.current = gl.domElement;
               gl.domElement.dataset.liquidIgnore = "true";
