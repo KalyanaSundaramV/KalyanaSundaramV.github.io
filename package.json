@@ -7,14 +7,14 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint . --ignore-pattern dist",
+    "lint": "eslint src tests --ignore-pattern dist",
     "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json",
     "test": "pnpm test:content && pnpm test:ui",
     "test:content": "node --test tests/site.test.mjs",
     "test:ui": "vitest run",
     "check:public": "node scripts/check-public-files.mjs",
     "format": "prettier --write . --ignore-path .gitignore",
-    "format:check": "prettier --check . --ignore-path .gitignore"
+    "format:check": "prettier --check . --ignore-path .gitignore --ignore-path .prettierignore"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

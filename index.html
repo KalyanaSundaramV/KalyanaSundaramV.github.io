@@ -1,81 +1,307 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f6f6f4" />
-    <script>
-      try {
-        const savedTheme = localStorage.getItem("kalyan-portfolio-theme");
-        const theme =
-          savedTheme === "light" || savedTheme === "dark"
-            ? savedTheme
-            : matchMedia("(prefers-color-scheme: dark)").matches
-              ? "dark"
-              : "light";
-        document.documentElement.dataset.theme = theme;
-        document
-          .querySelector('meta[name="theme-color"]')
-          ?.setAttribute("content", theme === "dark" ? "#000000" : "#f6f6f4");
-      } catch {
-        document.documentElement.dataset.theme = "light";
-      }
-    </script>
-    <meta
-      name="description"
-      content="Kalyana Sundaram V's portfolio: gameplay engineering, rapid prototypes, Unity production pipelines, and practical Windows and Android tools."
-    />
-    <meta
-      property="og:title"
-      content="Kalyana Sundaram V | Game & Tools Engineer"
-    />
-    <meta
-      property="og:description"
-      content="Gameplay systems, developer tools, and production pipelines built across Unity, C#, Cocos Creator, Android, and .NET."
-    />
-    <meta property="og:url" content="https://kalyanasundaramv.github.io/" />
-    <meta
-      property="og:image"
-      content="https://kalyanasundaramv.github.io/og-share.jpg"
-    />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta
-      property="og:image:alt"
-      content="Kalyan — Game Developer. Unity, Cocos and Unreal; Ludo Demolition."
-    />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link
-      rel="preload"
-      as="image"
-      href="/kalyan_glass_ui_png_pack/00_tokens/page_background_4k.webp"
-      fetchpriority="high"
-    />
-    <link
-      rel="preload"
-      as="image"
-      href="/kalyan_glass_ui_png_pack/00_tokens/blue_glow.webp"
-      fetchpriority="high"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
-      rel="stylesheet"
-      media="print"
-      onload="this.media = 'all'"
-    />
-    <link
-      href="https://db.onlinewebfonts.com/c/8b75d9dcff6a48c35a46656192adf019?family=FSP+DEMO+-+PODIUM+Sharp+4.11"
-      rel="stylesheet"
-      media="print"
-      onload="this.media = 'all'"
-    />
-    <title>Kalyana Sundaram V | Game & Tools Engineer</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="#061726"/>
+  <meta name="description" content="Kalyana Sundaram V — Bengaluru-based Game & Tools Engineer building gameplay systems, developer tools, and practical prototypes."/>
+  <title>Kalyana Sundaram V — Game & Tools Engineer</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <script defer src="content.js"></script>
+  <script defer src="case-study-data.js"></script>
+  <script defer src="source-tools-catalog.js"></script>
+  <script defer src="ambient-fx.js"></script>
+  <script defer src="fluid-fx.js"></script>
+  <script defer src="original-goo-pointer.js"></script>
+  <script defer src="app.js"></script>
+  <script defer src="immersive.js"></script>
+  <script defer src="original-3d-demo.js"></script>
+  <script defer src="numeric-motion.js"></script>
+  <script defer src="typography-motion.js"></script>
+</head>
+<body data-theme="crimson">
+  <!-- Theme change is a deliberate fullscreen cinematic transition (not just a color fade). -->
+  <div id="theme-transition" class="theme-transition" aria-hidden="true">
+    <canvas id="theme-shader" aria-hidden="true"></canvas>
+    <div class="theme-transition-grid" aria-hidden="true"></div>
+    <div class="theme-transition-orbit" aria-hidden="true"></div>
+    <div class="theme-transition-copy" aria-hidden="true">
+      <span class="theme-transition-index" id="transition-index">02 / 07</span>
+      <span class="theme-transition-caption" id="transition-effect-name">SHIFTING ATMOSPHERE</span>
+      <strong id="transition-name">DEEP OCEAN & TOXIC</strong><span class="transition-echo" aria-hidden="true" id="transition-echo">DEEP OCEAN</span>
+      <span class="theme-transition-caption">RECALIBRATING COLOR SYSTEM <b>✳</b></span>
+    </div>
+  </div>
+  <svg class="svg-defs" aria-hidden="true"><defs><filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="13" result="blur"/><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 21 -9" result="goo"/><feComposite in="SourceGraphic" in2="goo" operator="atop"/></filter></defs></svg>
+  <div class="bg-atmosphere" aria-hidden="true"><canvas id="particle-canvas"></canvas><canvas id="flow-field-canvas" aria-hidden="true"></canvas><div class="background-grain" aria-hidden="true"></div><div class="aura aura-1"></div><div class="aura aura-2"></div><div class="aura aura-3"></div><div class="noise"></div></div>
+  <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+  <canvas id="liquid-pointer" aria-hidden="true"></canvas>
+  <!-- Immersive, skippable intro: all effects are CSS and respect reduced motion. -->
+  <div class="preloader" id="preloader" role="status" aria-label="Portfolio introduction">
+    <div class="intro-background" aria-hidden="true"><canvas id="intro-webgl" aria-label="Decorative animated three-dimensional orbital architecture"></canvas><div class="intro-3d-fallback"></div><div class="intro-vignette"></div>
+      <span class="intro-grid"></span><span class="intro-halo halo-a"></span><span class="intro-halo halo-b"></span>
+      <span class="intro-scan"></span><span class="intro-cross cross-a">+</span><span class="intro-cross cross-b">+</span>
+    </div>
+    <div class="preloader-top">
+      <div class="intro-brand"><b>K<span>/</span>S.</b><small>GAME & TOOLS ENGINEER</small></div>
+      <div class="intro-edition">INTERACTIVE PORTFOLIO <span>— 2026 EDITION</span></div>
+    </div>
+    <div class="preloader-main">
+      <div class="intro-rail" aria-hidden="true"><span>01 — 07</span><i></i><span>CREATIVE ENGINEERING</span></div>
+      <div class="intro-stage">
+        <div class="intro-orbit" aria-hidden="true">
+          <span class="orbit-ring orbit-one"></span><span class="orbit-ring orbit-two"></span>
+          <span class="orbit-core"></span><span class="orbit-node node-one"></span><span class="orbit-node node-two"></span>
+          <span class="orbit-coordinate">X 12.98 / Y 77.21</span>
+        </div>
+        <div class="intro-eyebrow"><span class="intro-pulse"></span> OPENING THE EXPERIENCE <span>↗</span></div>
+        <div class="preloader-name" aria-label="Kalyana Sundaram">
+          <div class="intro-name-mask"><span class="intro-name-line">KALYANA</span></div>
+          <div class="intro-name-mask"><span class="intro-name-line intro-stroke">SUNDARAM<b>.</b></span></div>
+        </div>
+        <div class="intro-deck"><span>BUILDING WORLDS.</span><span>ENGINEERING SYSTEMS.</span></div><div class="intro-hud-3d" aria-hidden="true"><span>3D REACTOR / LIVE</span><span class="intro-hud-line"></span><span>ORBITAL SYSTEMS ONLINE</span></div>
+      </div>
+      <div class="intro-side-notes" aria-hidden="true"><span>DESIGN / SYSTEM / PLAY</span><span>BLR, INDIA<br/>12°58′ N · 77°35′ E</span></div>
+    </div>
+    <div class="intro-module-strip" aria-hidden="true">
+      <span><i></i> 01&nbsp; GAMEPLAY</span><span><i></i> 02&nbsp; TOOLCHAINS</span><span><i></i> 03&nbsp; SYSTEMS</span>
+    </div>
+    <div class="preloader-bottom">
+      <span class="intro-progress-label" id="intro-status">COMPOSING EXPERIENCE</span>
+      <div class="loader-track" aria-hidden="true"><span></span></div>
+      <span class="intro-count" id="load-count" aria-hidden="true">00%</span>
+      <button type="button" id="skip-intro">SKIP INTRO <span>↗</span></button>
+    </div>
+    <div class="intro-exit-line" aria-hidden="true"></div>
+  </div>
+  <header class="site-header" id="site-header">
+    <div class="nav-shell glass">
+      <a href="#top" class="brand" aria-label="Kalyana Sundaram, back to top"><span class="brand-mark">K<span>╱</span></span><span>KALYANA SUNDARAM</span></a>
+      <nav class="desktop-nav" aria-label="Main navigation" id="desktop-nav">
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="work">WORK</button>
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="about">ABOUT</button>
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="capabilities">CAPABILITIES</button>
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="tools">TOOLS</button>
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="experience">EXPERIENCE</button>
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="learning">LEARNING</button>
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="resume">RESUME</button>
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="contact">CONTACT</button>
+      </nav>
+      <div class="nav-underline" id="nav-underline" aria-hidden="true"></div>
+      <div class="nav-actions">
+        <button type="button" class="theme-orb" id="theme-orb" aria-label="Choose color theme" aria-expanded="false"><span></span></button>
+        <button type="button" class="mobile-toggle" id="mobile-toggle" aria-label="Open navigation" aria-expanded="false"><i></i><i></i></button>
+      </div>
+      <div class="liquid-menu" id="liquid-menu" aria-hidden="true" role="region" aria-label="Expanded navigation" inert>
+        <div class="nav-drop-neck" aria-hidden="true"></div><div class="goo-art" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div class="menu-content" id="menu-content"></div>
+      </div>
+      <div class="theme-menu" id="theme-menu" aria-hidden="true">
+        <div class="eyebrow">CHOOSE ATMOSPHERE <span>10 THEMES</span></div>
+        <div class="theme-options" id="theme-options"></div>
+        <button class="theme-random" id="theme-random" type="button" title="Choose another palette and animate into it">
+          <span class="theme-random-icon" aria-hidden="true">✳</span>
+          <span>SURPRISE ME <small>RANDOM PALETTE + TRANSITION</small></span>
+          <span aria-hidden="true">↗</span>
+        </button>
+        <div class="type-scale-panel">
+          <div class="type-scale-header"><label for="font-scale">TYPOGRAPHY SIZE</label><output for="font-scale" id="font-scale-value">100%</output></div>
+          <input id="font-scale" type="range" min="85" max="125" value="100" step="5" aria-label="Portfolio font size percentage" />
+          <div class="type-scale-foot"><span>A—</span><button id="font-scale-reset" type="button" aria-label="Reset typography size to 100%">RESET 100%</button><span>A+</span></div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="mobile-overlay" id="mobile-overlay" aria-hidden="true"><nav aria-label="Mobile navigation" id="mobile-links"></nav><div class="mobile-foot">GAME & TOOLS ENGINEER <span>↘ BENGALURU</span></div></div>
+  <main id="top">
+    <section id="hero" class="hero container">
+      <div class="hero-copy">
+        <p class="eyebrow hero-eyebrow reveal">GAME & TOOLS ENGINEER <span class="eyebrow-spark">✳</span></p>
+        <h1 class="hero-headline" aria-label="Kalyana Sundaram"><span class="hero-word solid kinetic" data-text="KALYANA">KALYANA</span><span class="hero-word outline kinetic" data-text="SUNDARAM">SUNDARAM<span class="punctuation">.</span></span></h1>
+        <p class="hero-statement reveal"><span>I BUILD</span> <strong>GAMES, TOOLS & SYSTEMS.</strong></p>
+        <p class="hero-intro reveal">I'm Kalyana Sundaram V. I build gameplay systems, developer tools, and rapid prototypes that are practical to test and extend.</p>
+        <div class="hero-buttons reveal">
+          <a class="pill primary magnet resume-link" href="resume/Kalyana_Sundaram_V_Resume_Public.pdf" download="Kalyana_Sundaram_V_Resume_Public.pdf">RESUME (PDF) <span>↧</span></a>
+          <a class="pill ghost magnet" href="#work">VIEW PROJECTS <span>↗</span></a>
+          <button class="pill ghost magnet demo-launch" type="button" data-open-demo>PLAY INTERACTIVE DEMO <span>↗</span></button>
+        </div>
+      </div>
+      <figure class="hero-media reveal" id="hero-media">
+        <div class="media-stage engineering-art" id="media-stage">
+<div class="systems-art" role="img" aria-label="Animated technical visualization of a procedural demolition simulation: stacked structural blocks fracture and disperse into debris, surrounded by game system diagnostics">
+  <div class="systems-art-hud systems-art-hud-top"><span class="live-dot"></span> SIMULATION / 01 <b>UNITY · C#</b></div>
+  <svg class="systems-art-svg" viewBox="0 0 740 880" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="beam-fill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="var(--accent-hot)" stop-opacity=".32"/><stop offset="1" stop-color="var(--accent-hot)" stop-opacity="0"/></linearGradient>
+      <radialGradient id="impact-glow"><stop stop-color="var(--accent-hot)" stop-opacity=".45"/><stop offset="1" stop-color="var(--accent-hot)" stop-opacity="0"/></radialGradient>
+      <pattern id="technical-grid" width="38" height="38" patternUnits="userSpaceOnUse"><path d="M38 0H0V38" fill="none" stroke="var(--art-grid)" stroke-width=".7"/></pattern>
+    </defs>
+    <rect width="740" height="880" fill="url(#technical-grid)" opacity=".47"/>
+    <circle class="systems-orbit orbit-a" cx="365" cy="453" r="293" stroke="var(--accent-hot)" stroke-width="1" stroke-dasharray="2 13" fill="none" opacity=".40"/>
+    <circle class="systems-orbit orbit-b" cx="365" cy="453" r="246" stroke="var(--accent-hot)" stroke-width="1.2" stroke-dasharray="122 44" fill="none" opacity=".47"/>
+    <path d="M42 453h656M365 128v638" stroke="var(--art-grid)" opacity=".6" stroke-dasharray="5 14"/>
+    <ellipse cx="372" cy="673" rx="216" ry="76" fill="var(--accent-hot)" opacity=".075" />
+    <g class="system-structure"><g class="fracture-brick " style="--delay:0.00s"><polygon points="223,640 290,640 307,618 240,618" fill="var(--brick-top)"/><polygon points="223,640 290,640 290,697 223,697" fill="var(--brick-front)"/><polygon points="290,640 307,618 307,675 290,697" fill="var(--brick-side)"/><path d="M231 653 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick " style="--delay:0.07s"><polygon points="299,643 366,643 383,621 316,621" fill="var(--brick-top)"/><polygon points="299,643 366,643 366,700 299,700" fill="var(--brick-front)"/><polygon points="366,643 383,621 383,678 366,700" fill="var(--brick-side)"/><path d="M307 656 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick " style="--delay:0.13s"><polygon points="375,646 442,646 459,624 392,624" fill="var(--brick-top)"/><polygon points="375,646 442,646 442,703 375,703" fill="var(--brick-front)"/><polygon points="442,646 459,624 459,681 442,703" fill="var(--brick-side)"/><path d="M383 659 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick " style="--delay:0.08s"><polygon points="219,566 286,566 303,544 236,544" fill="var(--brick-top)"/><polygon points="219,566 286,566 286,623 219,623" fill="var(--brick-front)"/><polygon points="286,566 303,544 303,601 286,623" fill="var(--brick-side)"/><path d="M227 579 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick " style="--delay:0.15s"><polygon points="295,569 362,569 379,547 312,547" fill="var(--brick-top)"/><polygon points="295,569 362,569 362,626 295,626" fill="var(--brick-front)"/><polygon points="362,569 379,547 379,604 362,626" fill="var(--brick-side)"/><path d="M303 582 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick " style="--delay:0.21s"><polygon points="371,572 438,572 455,550 388,550" fill="var(--brick-top)"/><polygon points="371,572 438,572 438,629 371,629" fill="var(--brick-front)"/><polygon points="438,572 455,550 455,607 438,629" fill="var(--brick-side)"/><path d="M379 585 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick " style="--delay:0.16s"><polygon points="215,492 282,492 299,470 232,470" fill="var(--brick-top)"/><polygon points="215,492 282,492 282,549 215,549" fill="var(--brick-front)"/><polygon points="282,492 299,470 299,527 282,549" fill="var(--brick-side)"/><path d="M223 505 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick " style="--delay:0.23s"><polygon points="291,495 358,495 375,473 308,473" fill="var(--brick-top)"/><polygon points="291,495 358,495 358,552 291,552" fill="var(--brick-front)"/><polygon points="358,495 375,473 375,530 358,552" fill="var(--brick-side)"/><path d="M299 508 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick " style="--delay:0.29s"><polygon points="367,498 434,498 451,476 384,476" fill="var(--brick-top)"/><polygon points="367,498 434,498 434,555 367,555" fill="var(--brick-front)"/><polygon points="434,498 451,476 451,533 434,555" fill="var(--brick-side)"/><path d="M375 511 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick " style="--delay:0.24s"><polygon points="211,418 278,418 295,396 228,396" fill="var(--brick-top)"/><polygon points="211,418 278,418 278,475 211,475" fill="var(--brick-front)"/><polygon points="278,418 295,396 295,453 278,475" fill="var(--brick-side)"/><path d="M219 431 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick " style="--delay:0.30s"><polygon points="287,421 354,421 371,399 304,399" fill="var(--brick-top)"/><polygon points="287,421 354,421 354,478 287,478" fill="var(--brick-front)"/><polygon points="354,421 371,399 371,456 354,478" fill="var(--brick-side)"/><path d="M295 434 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick fractured" style="--delay:0.37s"><polygon points="406,424 473,424 490,402 423,402" fill="var(--brick-top)"/><polygon points="406,424 473,424 473,481 406,481" fill="var(--brick-front)"/><polygon points="473,424 490,402 490,459 473,481" fill="var(--brick-side)"/><path d="M414 437 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick " style="--delay:0.32s"><polygon points="207,344 274,344 291,322 224,322" fill="var(--brick-top)"/><polygon points="207,344 274,344 274,401 207,401" fill="var(--brick-front)"/><polygon points="274,344 291,322 291,379 274,401" fill="var(--brick-side)"/><path d="M215 357 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick " style="--delay:0.39s"><polygon points="283,347 350,347 367,325 300,325" fill="var(--brick-top)"/><polygon points="283,347 350,347 350,404 283,404" fill="var(--brick-front)"/><polygon points="350,347 367,325 367,382 350,404" fill="var(--brick-side)"/><path d="M291 360 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick fractured" style="--delay:0.45s"><polygon points="408,350 475,350 492,328 425,328" fill="var(--brick-top)"/><polygon points="408,350 475,350 475,407 408,407" fill="var(--brick-front)"/><polygon points="475,350 492,328 492,385 475,407" fill="var(--brick-side)"/><path d="M416 363 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick " style="--delay:0.40s"><polygon points="203,270 270,270 287,248 220,248" fill="var(--brick-top)"/><polygon points="203,270 270,270 270,327 203,327" fill="var(--brick-front)"/><polygon points="270,270 287,248 287,305 270,327" fill="var(--brick-side)"/><path d="M211 283 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick fractured" style="--delay:0.47s"><polygon points="334,273 401,273 418,251 351,251" fill="var(--brick-top)"/><polygon points="334,273 401,273 401,330 334,330" fill="var(--brick-front)"/><polygon points="401,273 418,251 418,308 401,330" fill="var(--brick-side)"/><path d="M342 286 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g><g class="fracture-brick fractured" style="--delay:0.53s"><polygon points="410,276 477,276 494,254 427,254" fill="var(--brick-top)"/><polygon points="410,276 477,276 477,333 410,333" fill="var(--brick-front)"/><polygon points="477,276 494,254 494,311 477,333" fill="var(--brick-side)"/><path d="M418 289 h48" stroke="var(--brick-line)" stroke-width="1.2" opacity=".36"/></g></g>
+    <g class="fracture-rays" fill="none" stroke="var(--accent-hot)" stroke-width="1.5">
+      <path d="M441 349 l65 -65 l-8 -13 M456 376 l106 -28 M437 415 l87 45" stroke-dasharray="8 8"/>
+      <path d="M380 291 l-10 -55 M445 252 l58 -20 M492 413 l71 65" opacity=".65"/>
+    </g>
+    <g class="impact-marker"><circle cx="447" cy="380" r="83" fill="url(#impact-glow)"/><circle cx="447" cy="380" r="13" fill="none" stroke="var(--accent-hot)" stroke-width="2"/><circle cx="447" cy="380" r="30" fill="none" stroke="var(--accent-hot)" stroke-dasharray="5 7" opacity=".85"/><path d="M447 358v44M425 380h44" stroke="var(--accent-hot)" stroke-width="1.8"/></g>
+    <g class="art-debris"><polygon points="552,278 583,262 596,303 568,313"/><polygon points="574,432 603,415 614,439 596,459"/><polygon points="446,216 478,189 495,231 470,246"/><polygon points="601,355 622,329 636,363 610,379"/></g>
+    <g class="diagram-arrows" fill="none" stroke="var(--accent-hot)" stroke-width="1.5"><path d="M112 560H165l29-39" /><path d="M520 530l44-23h70"/><path d="M270 221l-34-43H104"/></g>
+    <g class="diagram-labels" fill="var(--art-text)" font-size="12" font-family="monospace" letter-spacing="2.0">
+      <text x="69" y="168">INPUT / CONTRACT</text><text x="69" y="188" opacity=".6">TOOLS + TARGETS</text>
+      <text x="53" y="549">FRACTURE FIELD</text><text x="567" y="492">DEBRIS</text><text x="567" y="511" opacity=".6">PHYSICS</text>
+      <text x="60" y="773" font-size="15" fill="var(--accent-hot)">SYSTEM / LIVE</text>
+      <text x="60" y="799" opacity=".63">PROCEDURAL DAMAGE · STRUCTURAL RESPONSE</text>
+    </g>
+  </svg>
+  <div class="systems-art-hud systems-art-hud-bottom"><span>FRACTURE → PHYSICS → FEEDBACK</span><span class="art-bars"><i></i><i></i><i></i><i></i><i></i></span></div>
+</div></div>
+        <figcaption>FIG. 01 — PROCEDURAL DEMOLITION / GAMEPLAY SYSTEMS</figcaption>
+      </figure>
+      <div class="hero-bottom"><div class="scroll-cue">SCROLL TO EXPLORE <span>↓</span></div><div class="hero-sidenote">PORTFOLIO / INTERACTIVE EDITION / 2026</div></div>
+      <div class="stats" id="stats"></div>
+    </section>
+    <section class="section container work-section" id="work">
+      <div class="section-head reveal"><div><div class="eyebrow">01 / SELECTED WORK</div><h2 class="display">WORK THAT<br/><em class="outline">SHIPS.</em></h2></div><p class="section-aside">Games, developer tools, mobile experiments, and production systems — built to be tested and extended.</p></div>
+      <div class="demo-feature glass reveal">
+        <div class="demo-feature-mark" aria-hidden="true"><span>✳</span><i></i></div>
+        <div><p class="eyebrow">LIVE INTERACTIVE / GAMEPLAY SYSTEMS</p>
+          <h3>BREAK THE <em>ENVIRONMENT.</em></h3>
+          <p>Play the original 3D destruction sandbox from my portfolio: orbit the scene, select tools including a wrecking ball and explosives, work through contracts, and inspect live destruction statistics. Built with Three.js and Rapier.</p>
+        </div>
+        <button type="button" class="pill primary demo-launch" data-open-demo>LAUNCH ORIGINAL 3D DEMO <span>↗</span></button>
+      </div>
+      <div class="filter-bar reveal"><span>PROJECT INDEX / <strong>08</strong></span><div id="filter-buttons" class="filter-buttons"><button data-filter="all" class="active">ALL / 08</button><button data-filter="Game">GAMES / 03</button><button data-filter="Tool">TOOLS / 05</button></div></div>
+      <div id="project-grid" class="project-grid"></div>
+    </section>
+    <section class="section container about-section" id="about">
+      <div class="about-layout">
+        <div class="reveal"><p class="eyebrow">02 / ABOUT</p><h2 class="display">SYSTEMS<br/>THAT <em class="outline">MAKE</em><br/>SENSE.</h2><div class="about-meta"><span>BASED IN BENGALURU ↗</span><span>GAME DEVELOPER / TOOLS ENGINEER / SYSTEM DESIGNER</span></div></div>
+        <div class="about-right reveal"><p class="about-lead">I'm a developer who loves systems.</p><p id="about-copy"></p><p class="about-details" id="about-details"></p><p class="about-availability" id="about-availability"></p><div class="about-tags"><span>GAME DEVELOPER</span><span>TOOLS ENGINEER</span><span>SYSTEM DESIGNER</span></div><a class="text-link" href="#contact">LET'S COLLABORATE ↗</a></div>
+      </div>
+      <div class="pipeline-layout"><div class="reveal"><p class="eyebrow">TECHNICAL SPOTLIGHT</p><h3 class="medium-title">CORE DESTRUCTION<br/><span class="outline">PIPELINE.</span></h3><p class="muted">A readable view of the systems behind destruction-driven gameplay.</p>
+        <div class="destruction-specialties" aria-label="Destruction engineering specialties">
+          <span>Chunking</span><span>Fracturing</span><span>Physics</span><span>Debris</span><span>Optimization</span><span>Tools</span>
+        </div>
+      </div><div id="pipeline" class="pipeline reveal"></div></div>
+      <div class="restored-about-content">
+        <div class="engineering-values reveal" aria-labelledby="engineering-values-heading">
+          <p class="eyebrow">ENGINEERING PHILOSOPHY / 04 PRINCIPLES</p>
+          <h3 class="medium-title" id="engineering-values-heading">HOW I <span class="outline">BUILD.</span></h3>
+          <div class="engineering-values-grid">
+            <article class="engineering-value glass"><span>01</span><h4>Readable systems</h4><p>Prefer clear gameplay and tooling architecture that can be debugged, tested, and extended without hiding important behavior.</p></article>
+            <article class="engineering-value glass"><span>02</span><h4>Playable proof</h4><p>Turn ideas into working prototypes quickly, then improve the loop with concrete player and developer feedback.</p></article>
+            <article class="engineering-value glass"><span>03</span><h4>Technical honesty</h4><p>Describe current evidence, constraints, and open work without overstating outcomes or exposing private implementation details.</p></article>
+            <article class="engineering-value glass"><span>04</span><h4>Polished delivery</h4><p>Treat performance, accessibility, content editing, and responsive layout as part of the product experience.</p></article>
+          </div>
+        </div>
+        <div class="restored-status reveal" aria-label="Current work and availability">
+          <div><span>BUILDING</span><strong>Ludo Demolition, ProjectPulse, and Unity asset pipelines</strong></div>
+          <div><span>AVAILABLE FOR</span><strong>Full-time game or tools roles and focused consulting</strong></div>
+        </div>
+        <figure class="original-media glass reveal">
+          <div class="original-media-head"><span class="eyebrow">ORIGINAL MEDIA / PROCEDURAL PREVIEW</span><span>THREE.JS · REAL-TIME SCENE</span></div>
+          <video controls muted playsinline preload="none" poster="media/homestead-preview-poster.webp" aria-label="Original procedural homestead environment preview">
+            <source src="media/homestead-preview.webm" type="video/webm"/>
+            <source src="media/homestead-preview.mp4" type="video/mp4"/>
+            Your browser does not support this video.
+          </video>
+          <figcaption>Procedural homestead capture from the original portfolio's 3D environment. This is a technical scene preview, not footage from the Unity Ludo Demolition game.</figcaption>
+        </figure>
+      </div>
+    </section>
+    <section class="section capabilities-section" id="capabilities">
+      <div class="container"><p class="eyebrow reveal">03 / CAPABILITIES</p><h2 class="display reveal">WHAT I <em class="outline">WORK IN</em></h2></div>
+      <div class="marquee" aria-label="Technologies and skills"><div class="marquee-inner" id="marquee-inner"></div></div>
+      <div class="container"><div class="cap-grid" id="cap-grid"></div></div>
+    </section>
+    <section class="section container tools-section" id="tools">
+      <div class="reveal"><p class="eyebrow">04 / TOOLS I BUILT</p><h2 class="display">SOFTWARE FOR <em class="outline">MYSELF.</em></h2></div>
+      <div class="tool-tabs" id="tool-tabs" role="group" aria-label="Browse types of work">
+        <button type="button" data-tool-tab="standalone" class="active" aria-pressed="true">STANDALONE PRODUCTS <span>04</span></button>
+        <button type="button" data-tool-tab="unity" aria-pressed="false">UNITY EDITOR TOOLS <span>39</span></button>
+        <button type="button" data-tool-tab="game" aria-pressed="false">GAME SYSTEMS <span>12</span></button>
+      </div>
+      <div class="tools-grid" id="tools-grid"></div>
+      <div id="tool-catalog" class="tool-catalog" aria-live="polite"></div>
+    </section>
+    <section class="section container experience-section" id="experience">
+      <div class="experience-layout"><div class="experience-left reveal"><p class="eyebrow">05 / EXPERIENCE</p><h2 class="display">TEN<br/>YEARS <em class="outline">IN<br/>MOTION.</em></h2><p>From a closed one-person studio to four-developer squads — games, prototypes, and the tools that make both faster.</p><div class="avail">✳ AVAILABLE FOR FULL-TIME ROLES & SELECTED COLLABORATIONS</div></div>
+      <div class="experience-right" id="experience-list"></div></div>
+      <div class="current-work-block reveal"><p class="eyebrow">CURRENT WORK / EVIDENCE-BACKED SYSTEMS</p>
+        <div class="current-work-grid">
+          <button type="button" data-modal-project="projectpulse" aria-label="View ProjectPulse details"><strong>PROJECTPULSE</strong><p>Engineering activity, ticket and Git workflows, schedules, agent handoffs, and structured review.</p></button>
+          <button type="button" data-modal-project="assetforge" aria-label="View AssetForge / PackTriage details"><strong>ASSETFORGE / PACKTRIAGE</strong><p>427-pack Unity asset triage, normalized intake, dependency containment and portable exports.</p></button>
+          <button type="button" data-modal-project="ludo-demolition" aria-label="View Ludo Demolition details"><strong>LUDO DEMOLITION</strong><p>Mobile-first procedural demolition with contract-driven goals, progression and destruction feedback.</p></button>
+        </div></div>
+      <button class="education glass reveal" type="button" data-modal-education aria-label="View education details"><p class="eyebrow">EDUCATION</p><h3 id="degree-title"></h3><p id="college-name"></p></button>
+    </section>
+    <section class="section container learning-section" id="learning">
+      <p class="eyebrow reveal">06 / LEARNING</p>
+      <h2 class="display reveal">ALWAYS <em class="outline">LEARNING.</em></h2>
+      <div class="learning-layout">
+        <div class="learning-intro glass reveal"><span class="learning-count">03<span> / NOTES</span></span>
+          <p>Learning through hands-on gameplay development, production tools, and reliable engineering workflows.</p></div>
+        <div class="learning-domains reveal">
+          <div><span>01 / PRACTICE AREA</span><strong>GAMEPLAY SYSTEMS</strong><p>Mechanics, progression and testable iteration</p></div>
+          <div><span>02 / PRACTICE AREA</span><strong>CONTENT PIPELINES</strong><p>Validation, normalization and workflow tooling</p></div>
+          <div><span>03 / PRACTICE AREA</span><strong>ENGINEERING WORKFLOWS</strong><p>Automation, collaboration and verification gates</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section container resume-section" id="resume"><p class="eyebrow reveal">07 / RESUME</p><h2 class="display reveal">THE FULL <em class="outline">RECORD.</em></h2><div class="resume-card glass reveal"><div><div class="eyebrow">AT A GLANCE</div><h3>KALYANA SUNDARAM V</h3><p>Game & Tools Engineer · Bengaluru, India</p><div id="resume-brief"></div></div><div><div class="eyebrow">PROJECTS</div><ol id="resume-projects"></ol><a class="pill ghost resume-link" id="resume-pdf" hidden href="#" download="Kalyana_Sundaram_V_Resume_Public.pdf">DOWNLOAD LOCAL PDF ↧</a></div></div></section>
+    <section class="section container contact-section" id="contact"><p class="eyebrow reveal">08 / CONTACT</p><h2 class="display giant reveal">LET'S BUILD<br/><em class="outline">SOMETHING<br/>REAL.</em></h2><p class="contact-intro reveal" id="contact-line"></p><div class="contact-links reveal"><a id="email-link" class="pill primary magnet" href="#">✉ &nbsp; EMAIL ME ↗</a><button type="button" class="pill ghost magnet" data-social="linkedin">LINKEDIN ↗</button><button type="button" class="pill ghost magnet" data-social="github">GITHUB ↗</button><button type="button" class="pill ghost magnet" id="copy-email">COPY EMAIL ⧉</button></div><footer class="footer"><span>© 2026 KALYANA SUNDARAM V — GAME & TOOLS ENGINEER</span><button type="button" id="back-to-top">BACK TO TOP ↑</button><span id="local-time">BENGALURU / IST</span></footer></section>
+  </main>
+  <!-- Only the content pane scrolls; header/actions remain visible on short mobile screens. -->
+  <div id="modal" class="modal" aria-hidden="true" inert>
+    <div class="modal-scrim" data-close-modal></div>
+    <div class="modal-panel glass" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-top">
+        <div class="modal-top-label"><span class="modal-top-dot" aria-hidden="true"></span><span id="modal-num">01 / CASE STUDY</span><span class="modal-top-suffix">SELECTED WORK / 08</span></div>
+        <button type="button" class="round-close" data-close-modal aria-label="Close case study">×</button>
+      </div>
+      <div class="modal-scroll" id="modal-scroll" tabindex="0" aria-label="Case study details, scroll to read">
+        <div class="modal-body" id="modal-body"></div>
+      </div>
+      <div class="modal-actions" id="modal-actions"></div>
+    </div>
+  </div>
+  <!-- The exact Three.js + Rapier destruction demo from the uploaded project.
+       Loads its original compiled bundle through a local HTTP server. -->
+  <div id="original-3d-demo" class="original-demo-overlay" aria-hidden="true" inert>
+    <div class="original-demo-backdrop" data-close-demo></div>
+    <section class="original-demo-panel" role="dialog" aria-modal="true" aria-labelledby="original-demo-title">
+      <header class="original-demo-toolbar">
+        <div class="original-demo-brand">
+          <span class="original-demo-live" aria-hidden="true"></span>
+          <div><span class="original-demo-caption">ORIGINAL SOURCE / INTERACTIVE</span>
+            <strong id="original-demo-title">LUDO DEMOLITION <em>3D SANDBOX</em></strong>
+          </div>
+        </div>
+        <div class="original-demo-actions">
+          <span class="original-demo-status" id="original-demo-status" role="status">STARTING ENGINE…</span>
+          <button type="button" class="original-demo-fullscreen" id="original-demo-fullscreen" aria-label="Enter demo fullscreen" aria-pressed="false" title="Enter fullscreen"><span aria-hidden="true">⛶</span></button>
+          <button type="button" class="original-demo-close" data-close-demo aria-label="Close 3D sandbox">CLOSE <span aria-hidden="true">×</span></button>
+        </div>
+      </header>
+      <div class="original-demo-viewport">
+        <div class="original-demo-loading" id="original-demo-loading" role="status">
+          <div class="original-demo-spinner" aria-hidden="true"></div>
+          <strong>INITIALIZING PHYSICS WORLD</strong>
+          <p>Loading the original Three.js and Rapier demolition systems…</p>
+        </div>
+        <div class="original-demo-error" id="original-demo-error" hidden>
+          <strong>This 3D demo needs a local web server.</strong>
+          <p>Run <code>START_PORTFOLIO.cmd</code> on Windows or <code>./start_portfolio.sh</code> on macOS/Linux, then open the local address shown in the terminal.</p>
+        </div>
+        <iframe id="original-demo-frame" title="Original 3D demolition sandbox" loading="lazy" allow="fullscreen; gamepad" referrerpolicy="no-referrer" tabindex="0"></iframe>
+      </div>
+      <div class="original-demo-foot"><span>ORBIT CAMERA · WRECKING BALL · EXPLOSIVES · CONTRACTS · DESTRUCTION STATS</span><span>ESC TO CLOSE</span></div>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
 </html>

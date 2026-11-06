@@ -291,10 +291,19 @@ test("keeps the portfolio content and adds the interactive destruction experienc
   }
   assert.match(destruction, /createBuilding/);
   assert.match(destruction, /createEnvironment/);
-  assert.match(html, /PODIUM\+Sharp\+4\.11/);
-  assert.match(html, /family=Inter/);
-  assert.match(html, /JetBrains\+Mono/);
-  assert.match(html, /Space\+Grotesk/);
+  // The published root HTML is a standalone page. These font links belong to
+  // the preserved, editable React/Vite source, not the deployment entrypoint.
+  const originalReactHtml = await readFile(
+    new URL("original-3d-react-source/index.html", root),
+    "utf8",
+  );
+  assert.match(originalReactHtml, /PODIUM\+Sharp\+4\.11/);
+  assert.match(originalReactHtml, /family=Inter/);
+  assert.match(originalReactHtml, /JetBrains\+Mono/);
+  assert.match(originalReactHtml, /Space\+Grotesk/);
+  // Keep validating that Pages serves the built static portfolio instead of Vite.
+  assert.match(html, /src="original-3d-demo\.js"/);
+  assert.doesNotMatch(html, /\/src\/main\.tsx/);
   // The PNG frame layers are gone, so the old hero frame preload must be too.
   assert.doesNotMatch(html, /hero_demo_frame__surface@2x\.png/);
   assert.match(css, /prefers-reduced-motion/);

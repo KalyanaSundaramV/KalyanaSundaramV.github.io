@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="#061726"/>
+  <meta name="description" content="Kalyana Sundaram V — Bengaluru-based Game & Tools Engineer building gameplay systems, developer tools, and practical prototypes."/>
+  <title>Kalyana Sundaram V — Game & Tools Engineer</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <script defer src="content.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-theme="crimson">
+  <svg class="svg-defs" aria-hidden="true"><defs><filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="13" result="blur"/><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 21 -9" result="goo"/><feComposite in="SourceGraphic" in2="goo" operator="atop"/></filter></defs></svg>
+  <div class="bg-atmosphere" aria-hidden="true"><canvas id="particle-canvas"></canvas><div class="aura aura-1"></div><div class="aura aura-2"></div><div class="aura aura-3"></div><div class="noise"></div></div>
+  <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+  <div id="cursor" aria-hidden="true"><span id="cursor-label">VIEW</span></div>
+  <div class="preloader" id="preloader" role="status" aria-live="polite">
+    <div class="preloader-top">KSV <span>PORTFOLIO — 2026</span></div>
+    <div class="preloader-main"><div class="preloader-name">KALYANA<br/><span>SUNDARAM</span><b>.</b></div></div>
+    <div class="preloader-bottom"><div class="loader-track"><span></span></div><span id="load-count">00%</span><button type="button" id="skip-intro">SKIP INTRO ↗</button></div>
+  </div>
+  <header class="site-header" id="site-header">
+    <div class="nav-shell glass">
+      <a href="#top" class="brand" aria-label="Kalyana Sundaram, back to top"><span class="brand-mark">K<span>╱</span></span><span>KALYANA SUNDARAM</span></a>
+      <nav class="desktop-nav" aria-label="Main navigation" id="desktop-nav">
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="work">WORK</button>
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="about">ABOUT</button>
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="capabilities">CAPABILITIES</button>
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="tools">TOOLS</button>
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="experience">EXPERIENCE</button>
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="resume">RESUME</button>
+        <button class="nav-link" type="button" aria-controls="liquid-menu" aria-haspopup="true" aria-expanded="false" data-menu="contact">CONTACT</button>
+      </nav>
+      <div class="nav-underline" id="nav-underline" aria-hidden="true"></div>
+      <div class="nav-actions">
+        <button type="button" class="theme-orb" id="theme-orb" aria-label="Choose color theme" aria-expanded="false"><span></span></button>
+        <button type="button" class="mobile-toggle" id="mobile-toggle" aria-label="Open navigation" aria-expanded="false"><i></i><i></i></button>
+      </div>
+      <div class="liquid-menu" id="liquid-menu" aria-hidden="true" role="region" aria-label="Expanded navigation" inert>
+        <div class="nav-drop-neck" aria-hidden="true"></div><div class="goo-art" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div class="menu-content" id="menu-content"></div>
+      </div>
+      <div class="theme-menu" id="theme-menu" aria-hidden="true">
+        <div class="eyebrow">CHOOSE ATMOSPHERE <span>07 THEMES</span></div>
+        <div class="theme-options" id="theme-options"></div>
+      </div>
+    </div>
+  </header>
+  <div class="mobile-overlay" id="mobile-overlay" aria-hidden="true"><nav aria-label="Mobile navigation" id="mobile-links"></nav><div class="mobile-foot">GAME & TOOLS ENGINEER <span>↘ BENGALURU</span></div></div>
+  <main id="top">
+    <section id="hero" class="hero container">
+      <div class="hero-copy">
+        <p class="eyebrow hero-eyebrow reveal">GAME & TOOLS ENGINEER <span class="eyebrow-spark">✳</span></p>
+        <h1 class="hero-headline" aria-label="Kalyana Sundaram"><span class="hero-word solid kinetic" data-text="KALYANA">KALYANA</span><span class="hero-word outline kinetic" data-text="SUNDARAM">SUNDARAM<span class="punctuation">.</span></span></h1>
+        <p class="hero-intro reveal">I build gameplay systems, developer tools, and rapid prototypes that are practical to test and extend.</p>
+        <div class="hero-buttons reveal">
+          <a class="pill primary magnet" href="#work">VIEW WORK <span>↗</span></a>
+          <a class="pill ghost magnet" href="#resume">RESUME <span>↧</span></a>
+          <button class="lens-button" id="lens-toggle" type="button" aria-pressed="false" title="Toggle interactive image reveal"><span class="lens-dot"></span> LENS MODE</button>
+        </div>
+      </div>
+      <figure class="hero-media reveal" id="hero-media">
+        <div class="media-stage" id="media-stage"><img src="assets/hero-printer.jpg" alt="Close-up of a 3D printer printing a yellow object, recovered from the supplied screen recording" /><div class="lens-reveal" id="lens-reveal" aria-hidden="true"></div><span class="lens-instruction">MOVE TO REVEAL ↗</span></div>
+        <figcaption>FIG. 01 — DESTRUCTION PIPELINE / GAMEPLAY SYSTEMS</figcaption>
+      </figure>
+      <div class="hero-bottom"><div class="scroll-cue">SCROLL TO EXPLORE <span>↓</span></div><div class="hero-sidenote">PORTFOLIO / INTERACTIVE EDITION / 2026</div></div>
+      <div class="stats" id="stats"></div>
+    </section>
+    <section class="section container work-section" id="work">
+      <div class="section-head reveal"><div><div class="eyebrow">01 / SELECTED WORK</div><h2 class="display">WORK THAT<br/><em class="outline">SHIPS.</em></h2></div><p class="section-aside">Games, developer tools, mobile experiments, and production systems — built to be tested and extended.</p></div>
+      <div class="filter-bar reveal"><span>PROJECT INDEX / <strong>08</strong></span><div id="filter-buttons" class="filter-buttons"><button data-filter="all" class="active">ALL / 08</button><button data-filter="Game">GAMES / 03</button><button data-filter="Tool">TOOLS / 05</button></div></div>
+      <div id="project-grid" class="project-grid"></div>
+    </section>
+    <section class="section container about-section" id="about">
+      <div class="about-layout">
+        <div class="reveal"><p class="eyebrow">02 / ABOUT</p><h2 class="display">SYSTEMS<br/>THAT <em class="outline">MAKE</em><br/>SENSE.</h2><div class="about-meta"><span>BASED IN BENGALURU ↗</span><span>GAME DEVELOPER / TOOLS ENGINEER / SYSTEM DESIGNER</span></div></div>
+        <div class="about-right reveal"><p class="about-lead">I'm a developer who loves systems.</p><p id="about-copy"></p><div class="about-tags"><span>GAME DEVELOPER</span><span>TOOLS ENGINEER</span><span>SYSTEM DESIGNER</span></div><a class="text-link" href="#contact">LET'S COLLABORATE ↗</a></div>
+      </div>
+      <div class="pipeline-layout"><div class="reveal"><p class="eyebrow">TECHNICAL SPOTLIGHT</p><h3 class="medium-title">CORE DESTRUCTION<br/><span class="outline">PIPELINE.</span></h3><p class="muted">A readable view of the systems behind destruction-driven gameplay.</p></div><div id="pipeline" class="pipeline reveal"></div></div>
+    </section>
+    <section class="section capabilities-section" id="capabilities">
+      <div class="container"><p class="eyebrow reveal">03 / CAPABILITIES</p><h2 class="display reveal">WHAT I <em class="outline">WORK IN</em></h2></div>
+      <div class="marquee" aria-label="Technologies and skills"><div class="marquee-inner" id="marquee-inner"></div></div>
+      <div class="container"><div class="cap-grid" id="cap-grid"></div></div>
+    </section>
+    <section class="section container tools-section" id="tools">
+      <div class="reveal"><p class="eyebrow">04 / TOOLS I BUILT</p><h2 class="display">SOFTWARE FOR <em class="outline">MYSELF.</em></h2></div>
+      <div class="tools-grid" id="tools-grid"></div>
+    </section>
+    <section class="section container experience-section" id="experience">
+      <div class="experience-layout"><div class="experience-left reveal"><p class="eyebrow">05 / EXPERIENCE</p><h2 class="display">TEN<br/>YEARS <em class="outline">IN<br/>MOTION.</em></h2><p>From a closed one-person studio to four-developer squads — games, prototypes, and the tools that make both faster.</p><div class="avail">✳ AVAILABLE FOR FULL-TIME ROLES & SELECTED COLLABORATIONS</div></div>
+      <div class="experience-right" id="experience-list"></div></div>
+      <div class="education glass reveal"><p class="eyebrow">EDUCATION</p><h3 id="degree-title"></h3><p id="college-name"></p></div>
+    </section>
+    <section class="section container resume-section" id="resume"><p class="eyebrow reveal">06 / RESUME</p><h2 class="display reveal">THE FULL <em class="outline">RECORD.</em></h2><div class="resume-card glass reveal"><div><div class="eyebrow">AT A GLANCE</div><h3>KALYANA SUNDARAM V</h3><p>Game & Tools Engineer · Bengaluru, India</p><div id="resume-brief"></div></div><div><div class="eyebrow">PROJECTS</div><ol id="resume-projects"></ol><a href="#contact" class="text-link">CONTACT FOR RESUME ↗</a><p class="resume-note">Add your PDF URL in <code>content.js</code> to enable direct download.</p><a class="pill ghost resume-link" id="resume-pdf" hidden href="#">DOWNLOAD PDF ↧</a></div></div></section>
+    <section class="section container contact-section" id="contact"><p class="eyebrow reveal">07 / CONTACT</p><h2 class="display giant reveal">LET'S BUILD<br/><em class="outline">SOMETHING<br/>REAL.</em></h2><p class="contact-intro reveal" id="contact-line"></p><div class="contact-links reveal"><a id="email-link" class="pill primary magnet" href="#">✉ &nbsp; EMAIL ME ↗</a><button type="button" class="pill ghost magnet" data-social="linkedin">LINKEDIN ↗</button><button type="button" class="pill ghost magnet" data-social="github">GITHUB ↗</button><button type="button" class="pill ghost magnet" id="copy-email">COPY EMAIL ⧉</button></div><footer class="footer"><span>© 2026 KALYANA SUNDARAM V — GAME & TOOLS ENGINEER</span><button type="button" id="back-to-top">BACK TO TOP ↑</button><span id="local-time">BENGALURU / IST</span></footer></section>
+  </main>
+  <div id="modal" class="modal" aria-hidden="true"><div class="modal-scrim" data-close-modal></div><div class="modal-panel glass" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-top"><span id="modal-num">01 / CASE STUDY</span><button type="button" class="round-close" data-close-modal aria-label="Close case study">×</button></div><div class="modal-body" id="modal-body"></div></div></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

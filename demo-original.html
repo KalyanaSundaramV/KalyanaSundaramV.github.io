@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f6f4" />
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("kalyan-portfolio-theme");
+        const theme =
+          savedTheme === "light" || savedTheme === "dark"
+            ? savedTheme
+            : matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+        document.documentElement.dataset.theme = theme;
+        document
+          .querySelector('meta[name="theme-color"]')
+          ?.setAttribute("content", theme === "dark" ? "#000000" : "#f6f6f4");
+      } catch {
+        document.documentElement.dataset.theme = "light";
+      }
+    </script>
+    <meta
+      name="description"
+      content="Kalyana Sundaram V's portfolio: gameplay engineering, rapid prototypes, Unity production pipelines, and practical Windows and Android tools."
+    />
+    <meta
+      property="og:title"
+      content="Kalyana Sundaram V | Game & Tools Engineer"
+    />
+    <meta
+      property="og:description"
+      content="Gameplay systems, developer tools, and production pipelines built across Unity, C#, Cocos Creator, Android, and .NET."
+    />
+    <meta property="og:url" content="https://kalyanasundaramv.github.io/" />
+    <meta
+      property="og:image"
+      content="https://kalyanasundaramv.github.io/og-share.jpg"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Kalyan — Game Developer. Unity, Cocos and Unreal; Ludo Demolition."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="preload"
+      as="image"
+      href="/kalyan_glass_ui_png_pack/00_tokens/page_background_4k.webp"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="/kalyan_glass_ui_png_pack/00_tokens/blue_glow.webp"
+      fetchpriority="high"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media = 'all'"
+    />
+    <link
+      href="https://db.onlinewebfonts.com/c/8b75d9dcff6a48c35a46656192adf019?family=FSP+DEMO+-+PODIUM+Sharp+4.11"
+      rel="stylesheet"
+      media="print"
+      onload="this.media = 'all'"
+    />
+    <title>Kalyana Sundaram V | Game & Tools Engineer</title>
+    <script type="module" crossorigin src="/assets/index-9IE7GlZu.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-XgoIb9oc.css">
+  
+<style id="embedded-3d-original">
+html,body,#root{width:100%!important;height:100%!important;min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;overflow:hidden!important;background:#070d17!important}
+body{color:#f4f4ff!important}
+.site-header,.mobile-menu,.page-cursor,.scroll-progress,.floating-controls,.site-footer,.portfolio-footer,.intro-overlay,.glass-toolbar,.theme-switcher{display:none!important}
+.portfolio-page, #root>.portfolio-page, main{width:100%!important;height:100%!important;min-width:0!important;max-width:none!important;min-height:0!important;overflow:hidden!important;margin:0!important;padding:0!important;box-shadow:none!important;background:#070d17!important}
+main>section:not(#home){display:none!important}
+#home{position:fixed!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;overflow:hidden!important;border:0!important;margin:0!important;padding:0!important}
+#home .hero-ambient,#home .hero-copy-glass,#home .hero-status,#home .hero-support,#home .hero-cta-row {display:none!important}
+#home .hero-panel{position:absolute!important;inset:0!important;max-width:none!important;width:100%!important;height:100%!important;min-height:0!important;margin:0!important;padding:0!important;overflow:hidden!important;background:#070d17!important;border-radius:0!important;border:0!important;box-shadow:none!important;transform:none!important}
+#home .hero-demo-glass{position:absolute!important;inset:0!important;height:100%!important;width:100%!important;min-height:0!important;max-width:none!important;margin:0!important;padding:0!important;border-radius:0!important;border:0!important;box-shadow:none!important;transform:none!important}
+#home .hero-demo-content{height:100%!important;width:100%!important;border-radius:0!important}
+#home .demo-stage{width:100%!important;height:100%!important;min-height:0!important;border-radius:0!important}
+#home .demo-interactive-layer{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+#home .lab-canvas-wrap{height:100%!important;width:100%!important}
+#home .destruction-lab{height:100%!important;min-height:0!important;grid-template-rows:minmax(0,1fr) auto!important}
+#home .demo-poster{background:linear-gradient(120deg,rgba(1,3,13,.4),rgba(1,3,13,.1))!important}
+@media(max-width:600px){#home .demo-session-controls{top:6px!important;padding:4px!important;max-width:96%!important}#home .lab-control-stack{max-width:45%!important}}
+</style>
+<script id="embedded-3d-starter">
+if(new URLSearchParams(location.search).has('embed')){
+  try{localStorage.setItem('kalyan-portfolio-theme','dark')}catch(e){}
+  window.addEventListener('DOMContentLoaded',()=>{
+    let count=0;
+    const tick=setInterval(()=>{
+      count++;
+      if(document.querySelector('#interactive-demo') && count>3){
+        clearInterval(tick);
+        setTimeout(()=>window.dispatchEvent(new Event('portfolio-demo-play-request')),550);
+      }
+      if(count>150)clearInterval(tick);
+    },130);
+  });
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

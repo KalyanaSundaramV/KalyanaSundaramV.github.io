@@ -1,0 +1,38 @@
+# Formatting baseline exceptions for preserved imported portfolio.
+# These are prebuilt bundles, third-party/source snapshots, and existing
+# standalone runtime assets. Ignore by Prettier only (not by Git).
+# Re-enable formatting incrementally if actively maintaining a file.
+
+/_site/
+/assets/
+/kalyan_glass_ui_png_pack/
+/media/
+/resume/
+/original-3d-react-source/
+
+# Existing standalone website/runtime (preserved without reformatting)
+/ambient-fx.js
+/app.js
+/case-study-data.js
+/content.js
+/demo-original.html
+/fluid-fx.js
+/immersive.js
+/index.html
+/numeric-motion.js
+/original-3d-demo.js
+/original-goo-pointer.js
+/server.cjs
+/source-tools-catalog.js
+/styles.css
+/typography-motion.js
+
+# Imported historical documentation snapshots
+/CONTENT_RESTORATION_CHANGELOG.md
+/GITHUB_DEPLOYMENT.md
+/IMPLEMENTATION_CHECKLIST.md
+/MODEL_IMPORT_GUIDE.md
+/NUMERIC_TYPOGRAPHY_CHANGELOG.md
+/SURGICAL_CHANGELOG.md
+/TARGETED_FIXES_CHANGELOG.md
+/TILE_RELIEF_CHANGELOG.md
