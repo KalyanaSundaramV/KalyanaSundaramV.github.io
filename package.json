@@ -14,7 +14,7 @@
     "test:ui": "vitest run",
     "check:public": "node scripts/check-public-files.mjs",
     "format": "prettier --write . --ignore-path .gitignore",
-    "format:check": "prettier --check . --ignore-path .gitignore"
+    "format:check": "prettier --check . --ignore-path .gitignore --ignore-path .prettierignore"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
