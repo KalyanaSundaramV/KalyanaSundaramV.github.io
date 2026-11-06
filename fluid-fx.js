@@ -234,7 +234,7 @@ function drawFallback(progress,fx){
 // Draws only near the moving wavefront; the portfolio is visible underneath.
 const reliefCtx=canvas.getContext("2d",{alpha:true,desynchronized:true});
 function reliefResize(){
-  const scale=mobileFx?1:Math.min(devicePixelRatio||1,1.25);
+  const scale=mobileFx.matches?1:Math.min(devicePixelRatio||1,1.25);
   canvas.width=Math.max(1,Math.round(innerWidth*scale));
   canvas.height=Math.max(1,Math.round(innerHeight*scale));
 }
@@ -316,9 +316,10 @@ window.ThemeFlux={
     const handle={cancel:()=>{if(!fired){fired=true;onMid();}cleanup();}};
     const tick=now=>{
       if(dead)return;
-      const p=clamp((now-started)/(mobileFx?490:740),0,1);
+      const isMobile=mobileFx.matches;
+      const p=clamp((now-started)/(isMobile?490:740),0,1);
       if(p>=.44&&!fired){fired=true;onMid();}
-      if(mobileFx && p<1 && now-lastPaint<32){id=requestAnimationFrame(tick);return;}
+      if(isMobile && p<1 && now-lastPaint<32){id=requestAnimationFrame(tick);return;}
       lastPaint=now;
       paintRelief(p,config);
       if(p<1)id=requestAnimationFrame(tick);
