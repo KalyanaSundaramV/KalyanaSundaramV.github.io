@@ -2054,3 +2054,38 @@ body.original-demo-active .section-orbit {visibility:hidden!important}
       visibility: visible !important;
     }
   }
+
+/* MOBILE_POLISH_V3_THEME: compact featured themes with preserved secondary choices. */
+#theme-menu { max-height: min(80dvh, 660px); overflow-y: auto; overscroll-behavior: contain; }
+#theme-menu .theme-extra { margin-top: 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--chip-bg); }
+#theme-menu .theme-extra > summary { display: flex; align-items: center; gap: 6px; padding: 12px; cursor: pointer; list-style: none; font: 800 10px/1.4 monospace; letter-spacing: .08em; color: var(--ink); }
+#theme-menu .theme-extra > summary::-webkit-details-marker { display: none; }
+#theme-menu .theme-extra > summary:focus-visible { outline: 2px solid var(--accent-hot); outline-offset: 2px; border-radius: 10px; }
+#theme-menu .theme-extra > summary small { color: var(--muted); font-size: 9px; font-weight: 500; letter-spacing: 0; margin-left: auto; max-width: 47%; overflow-wrap: anywhere; }
+#theme-menu .theme-chevron { flex: none; color: var(--accent-hot); font-size: 17px; transition: transform .2s ease; }
+#theme-menu .theme-extra[open] .theme-chevron { transform: rotate(180deg); }
+#theme-menu .theme-options-more { margin: 0; padding: 0 7px 8px; }
+#theme-menu .theme-extra-tools { padding: 0 9px 10px; }
+#theme-menu .theme-extra-tools .theme-random { width: 100%; }
+#theme-menu .theme-extra-tools .type-scale-panel { margin-top: 10px; }
+
+
+/* MOBILE_POLISH_V3_SHELL: frame chrome only; desktop visuals remain unchanged. */
+@media (pointer: coarse) and (max-width: 700px) {
+  body.mobile-demo-focus .original-demo-toolbar {
+    min-height: 42px !important;
+    padding: max(5px, env(safe-area-inset-top)) calc(8px + env(safe-area-inset-right)) 5px calc(8px + env(safe-area-inset-left)) !important;
+    gap: 6px;
+  }
+  body.mobile-demo-focus .original-demo-caption,
+  body.mobile-demo-focus .original-demo-brand .original-demo-live { display: none !important; }
+  body.mobile-demo-focus .original-demo-brand strong { font-size: 11px !important; line-height: 1.2; }
+  body.mobile-demo-focus .original-demo-actions { gap: 5px; }
+  body.mobile-demo-focus .original-demo-status {
+    position: absolute !important; width: 1px !important; height: 1px !important;
+    overflow: hidden !important; clip-path: inset(50%); white-space: nowrap;
+  }
+  body.mobile-demo-focus .original-demo-fullscreen,
+  body.mobile-demo-focus .original-demo-close { min-height: 30px !important; min-width: 35px; padding: 4px 7px !important; font-size: 13px !important; }
+}
+

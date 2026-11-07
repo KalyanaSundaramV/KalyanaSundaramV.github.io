@@ -98,18 +98,28 @@
         <div class="menu-content" id="menu-content"></div>
       </div>
       <div class="theme-menu" id="theme-menu" aria-hidden="true">
-        <div class="eyebrow">CHOOSE ATMOSPHERE <span>10 THEMES</span></div>
+        <!-- MOBILE_POLISH_V3_THEME: foreground choices; everything else stays accessible. -->
+        <div class="eyebrow">THEMES <span>10 PALETTES</span></div>
         <div class="theme-options" id="theme-options"></div>
-        <button class="theme-random" id="theme-random" type="button" title="Choose another palette and animate into it">
-          <span class="theme-random-icon" aria-hidden="true">✳</span>
-          <span>SURPRISE ME <small>RANDOM PALETTE + TRANSITION</small></span>
-          <span aria-hidden="true">↗</span>
-        </button>
-        <div class="type-scale-panel">
-          <div class="type-scale-header"><label for="font-scale">TYPOGRAPHY SIZE</label><output for="font-scale" id="font-scale-value">100%</output></div>
-          <input id="font-scale" type="range" min="85" max="125" value="100" step="5" aria-label="Portfolio font size percentage" />
-          <div class="type-scale-foot"><span>A—</span><button id="font-scale-reset" type="button" aria-label="Reset typography size to 100%">RESET 100%</button><span>A+</span></div>
-        </div>
+        <details class="theme-extra" id="theme-extra">
+          <summary><span>ADDITIONAL THEMES</span><small class="theme-extra-status">9 MORE PALETTES</small><span aria-hidden="true" class="theme-chevron">⌄</span></summary>
+          <div class="theme-options theme-options-more" id="theme-options-more"></div>
+        </details>
+        <details class="theme-extra theme-tools">
+          <summary><span>MORE CONTROLS</span><small>RANDOM + TEXT SIZE</small><span aria-hidden="true" class="theme-chevron">⌄</span></summary>
+          <div class="theme-extra-tools">
+            <button class="theme-random" id="theme-random" type="button" title="Choose another palette and animate into it">
+              <span class="theme-random-icon" aria-hidden="true">✳</span>
+              <span>SURPRISE ME <small>RANDOM PALETTE + TRANSITION</small></span>
+              <span aria-hidden="true">↗</span>
+            </button>
+            <div class="type-scale-panel">
+              <div class="type-scale-header"><label for="font-scale">TYPOGRAPHY SIZE</label><output for="font-scale" id="font-scale-value">100%</output></div>
+              <input id="font-scale" type="range" min="85" max="125" value="100" step="5" aria-label="Portfolio font size percentage" />
+              <div class="type-scale-foot"><span>A—</span><button id="font-scale-reset" type="button" aria-label="Reset typography size to 100%">RESET 100%</button><span>A+</span></div>
+            </div>
+          </div>
+        </details>
       </div>
     </div>
   </header>

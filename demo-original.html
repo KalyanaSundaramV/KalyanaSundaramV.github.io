@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f6f6f4" />
+    <meta name="theme-color" content="#FBFBFB" />
     <script>
       try {
         const savedTheme = localStorage.getItem("kalyan-portfolio-theme");
@@ -16,7 +16,7 @@
         document.documentElement.dataset.theme = theme;
         document
           .querySelector('meta[name="theme-color"]')
-          ?.setAttribute("content", theme === "dark" ? "#000000" : "#f6f6f4");
+          ?.setAttribute("content", theme === "dark" ? "#151419" : "#FBFBFB");
       } catch {
         document.documentElement.dataset.theme = "light";
       }
@@ -73,8 +73,8 @@
       onload="this.media = 'all'"
     />
     <title>Kalyana Sundaram V | Game & Tools Engineer</title>
-    <script type="module" crossorigin src="/assets/index-9IE7GlZu.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-XgoIb9oc.css">
+    <script type="module" crossorigin src="/assets/index-BKF7bp4t.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CEP7p3pQ.css">
   
 <style id="embedded-3d-original">
 html,body,#root{width:100%!important;height:100%!important;min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;overflow:hidden!important;background:#070d17!important}
@@ -95,6 +95,132 @@ main>section:not(#home){display:none!important}
 @media(max-width:600px){#home .demo-session-controls{top:6px!important;padding:4px!important;max-width:96%!important}#home .lab-control-stack{max-width:45%!important}}
 /* Avoid backdrop blur over animated WebGL on touch devices. */
 @media(pointer:coarse) and (max-width:1100px){#root .demo-session-controls,#root .lab-control-stack,#root .lab-hud,#root .lab-toolbar,#root .hero-demo-glass{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+</style>
+
+<style id="mobile-polish-v3-embed">
+/* MOBILE_POLISH_V4_PALETTE: six supplied swatches for new mobile controls. */
+/* MOBILE_POLISH_V3_EMBED: these overrides affect only the embedded phone game. */
+@media (pointer: coarse) and (max-width: 700px) {
+  #home .demo-session-controls {
+    top: calc(6px + env(safe-area-inset-top, 0px)) !important;
+    left: 7px !important; right: auto !important; bottom: auto !important;
+    transform: none !important; width: max-content !important;
+    max-width: calc(100% - 14px) !important; min-height: 0 !important;
+    flex-wrap: nowrap !important; padding: 3px !important; gap: 3px !important;
+    border-radius: 12px !important; background: rgba(27, 27, 30, .92) !important;
+    -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  }
+  #home .demo-zoom-hint { display: none !important; }
+  #home .demo-session-controls .button {
+    display: inline-flex !important; align-items: center !important; gap: 3px !important;
+    min-width: 0 !important; min-height: 29px !important;
+    padding: 4px 7px !important; font-size: 10px !important; line-height: 1.1 !important;
+    white-space: nowrap !important;
+  }
+  #home .demo-session-controls .button svg { width: 12px !important; height: 12px !important; }
+  #home .lab-live-badge, #home .lab-scene-label,
+  #home .lab-target-hint-glass, #home .lab-keyboard-glass { display: none !important; }
+  #home .lab-stats-glass {
+    top: calc(44px + env(safe-area-inset-top, 0px)) !important;
+    right: 7px !important; left: 7px !important; bottom: auto !important;
+    width: auto !important; height: auto !important; min-height: 0 !important;
+    max-width: none !important; border-radius: 12px !important;
+  }
+  #home .lab-stats { padding: 5px !important; }
+  #home .lab-stats-head, #home .damage-chart { display: none !important; }
+  #home .lab-stats-grid {
+    display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 3px !important; margin: 0 !important;
+  }
+  #home .lab-stats-grid > span {
+    display: flex !important; min-width: 0 !important; flex-direction: column !important;
+    align-items: center !important; justify-content: center !important;
+    gap: 2px !important; padding: 4px 2px !important; border-radius: 8px !important;
+    background: rgba(38, 38, 38, .7) !important;
+  }
+  #home .lab-stats-grid small { font-size: 9px !important; white-space: nowrap !important; }
+  #home .lab-stats-grid > span > span { font-size: 11px !important; white-space: nowrap !important; }
+  #home .lab-mobile-toggle {
+    display: inline-flex !important; align-items: center; justify-content: center;
+    position: absolute; z-index: 38; bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+    max-width: calc(50% - 12px); min-height: 34px; padding: 6px 10px;
+    border: 1px solid rgba(135, 135, 135, .4); border-radius: 10px;
+    background: rgba(27, 27, 30, .94); color: #FBFBFB;
+    font: 700 11px/1.2 system-ui, sans-serif; cursor: pointer; touch-action: manipulation;
+    -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  }
+  #home .lab-mobile-toggle[aria-expanded="true"] { border-color: #F56E0F; }
+  #home .lab-mobile-contract-toggle { left: 8px; }
+  #home .lab-mobile-settings-toggle { right: 8px; }
+  #home .lab-canvas-wrap[data-mobile-contract-open="false"] .lab-contract-glass,
+  #home .lab-canvas-wrap[data-mobile-controls-open="false"] .lab-control-stack { display: none !important; }
+  #home .lab-contract-glass {
+    z-index: 37 !important;
+    top: calc(105px + env(safe-area-inset-top, 0px)) !important;
+    right: 8px !important; left: 8px !important;
+    width: auto !important; max-width: none !important;
+    max-height: min(54dvh, 390px) !important; overflow-y: auto !important;
+    overscroll-behavior: contain; border-radius: 12px !important;
+  }
+  #home .lab-control-stack {
+    z-index: 37 !important; top: auto !important;
+    bottom: calc(108px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 8px !important; left: 8px !important; width: auto !important;
+    display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important; max-height: min(53dvh, 300px) !important;
+    overflow-y: auto !important; overscroll-behavior: contain;
+    padding: 5px; border-radius: 14px; background: rgba(21, 20, 25, .92);
+  }
+  #home .lab-control-stack .lab-camera-glass { display: none !important; }
+  #home .lab-control-stack .lab-environment-selector,
+  #home .lab-control-stack .lab-time-controls { padding: 8px !important; }
+  #home .lab-control-stack .scene-tile { min-height: 30px !important; }
+  #home .lab-control-stack .lab-environment-current { font-size: 10px !important; }
+  #home .lab-control-stack .lab-time-controls button { min-width: 0 !important; height: 32px !important; }
+  #home .lab-mobile-graphics {
+    display: grid !important; grid-column: 1 / -1; grid-template-columns: auto 1fr;
+    align-items: center; gap: 8px; padding: 7px 9px;
+    border: 1px solid rgba(135, 135, 135, .25); border-radius: 10px;
+    color: #FBFBFB; background: rgba(27, 27, 30, .9);
+  }
+  #home .lab-mobile-graphics label { font: 700 11px/1.25 system-ui, sans-serif; }
+  #home .lab-mobile-graphics select {
+    min-width: 0; width: 100%; min-height: 33px; padding: 5px 8px;
+    border: 1px solid rgba(135, 135, 135, .35); border-radius: 8px;
+    background: #262626; color: #FBFBFB; font: 600 12px/1.2 system-ui, sans-serif;
+  }
+  #home .lab-tool-chip-glass {
+    left: 6px !important; right: 6px !important;
+    bottom: calc(6px + env(safe-area-inset-bottom, 0px)) !important;
+    max-width: none !important; width: auto !important;
+    -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  }
+  #home .lab-tool-list { overflow-x: auto !important; scrollbar-width: thin; gap: 3px !important; }
+  #home .lab-tool-list .lab-icon-button { min-width: 37px !important; min-height: 38px !important; flex: 0 0 37px !important; }
+  #home .lab-use-tool, #home .lab-reset-tool { min-height: 38px !important; }
+}
+@media (pointer: coarse) and (max-width: 359px) {
+  #home .demo-session-controls .button { font-size: 9px !important; padding-inline: 5px !important; }
+  #home .lab-mobile-toggle { font-size: 10px !important; padding-inline: 7px !important; }
+}
+
+@media (pointer: coarse) and (max-width: 700px) {
+  /* Palette applies only to the phone demo's controls, not 3D object materials. */
+  #home .lab-stats-glass, #home .lab-contract-glass,
+  #home .lab-tool-chip-glass {
+    background-color: rgba(27, 27, 30, .92) !important;
+    border-color: rgba(135, 135, 135, .35) !important;
+    color: #FBFBFB !important;
+  }
+  #home .lab-stats-grid > span {
+    color: #FBFBFB !important;
+  }
+  #home .lab-mobile-graphics select:focus-visible,
+  #home .lab-mobile-toggle:focus-visible {
+    outline: 2px solid #F56E0F !important;
+    outline-offset: 2px;
+  }
+}
 </style>
 <script id="embedded-3d-starter">
 if(new URLSearchParams(location.search).has('embed')){

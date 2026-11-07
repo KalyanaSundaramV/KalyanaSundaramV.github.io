@@ -344,6 +344,14 @@ const compactWebGL = () =>
   typeof window.matchMedia === "function" &&
   window.matchMedia("(pointer:coarse) and (max-width:1100px)").matches;
 
+// MOBILE_POLISH_V3_QUALITY: mobile-only presets; desktop is left untouched.
+const mobileVisualPresets = {
+  low: { dpr: 0.85, shadowMap: 512, antialias: false },
+  balanced: { dpr: 1.1, shadowMap: 1024, antialias: true },
+  high: { dpr: 1.25, shadowMap: 2048, antialias: true },
+} as const;
+type MobileVisualQuality = keyof typeof mobileVisualPresets;
+
 const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -3599,6 +3607,7 @@ function DestructionScene({
   customEnvironment,
   onMeshStatus,
   darkMode,
+  shadowResolution = 2048,
   timeScale,
   paused,
   onFps,
@@ -3624,6 +3633,7 @@ function DestructionScene({
   customEnvironment: ImportedMesh | null;
   onMeshStatus: (slot: MeshSlot, status: string) => void;
   darkMode: boolean;
+  shadowResolution?: number;
   timeScale: number;
   paused: boolean;
   onFps: (fps: number) => void;
@@ -3656,39 +3666,44 @@ function DestructionScene({
         reducedMotion={prefersReducedMotion()}
       />
       <SceneThemeGrade darkMode={darkMode} />
-      {/* A low, soft-edged warm key pooled on the target block: long raking
-          shadows, the surroundings falling off into shade, and a weak cool
-          fill so the shadow sides stay readable. */}
-      <ambientLight intensity={(darkMode ? 0.18 : 0.5) * light} />
+      {/* LIGHTING_POLISH_V1_THREE_POINT: balanced 3-point lighting in the six-color portfolio palette.
+          Snow key, Dusty Grey fill, and a subtle Liquid Lava rim.
+          Keep one shadow caster, existing quality presets, and weather dimming. */}
+      <ambientLight color="#FBFBFB" intensity={(darkMode ? 0.28 : 0.58) * light} />
       <hemisphereLight
         args={
           darkMode
-            ? ["#2a3a48", "#050505", 0.65 * light]
-            : [scene.sky, scene.ground, 0.85 * light]
+            ? ["#FBFBFB", "#151419", 0.72 * light]
+            : ["#FBFBFB", "#878787", 0.92 * light]
         }
       />
       <primitive object={keyTarget} position={[BUILDING_X, 0, 0]} />
       <spotLight
         castShadow
         target={keyTarget}
-        position={[BUILDING_X - 20, 24, 34]}
-        color="#ffe0bd"
-        intensity={(darkMode ? 7 : 5.5) * light}
-        angle={0.7}
-        penumbra={0.85}
+        position={[BUILDING_X - 23, 27, 32]}
+        color="#FBFBFB"
+        intensity={(darkMode ? 6.8 : 5.2) * light}
+        angle={0.76}
+        penumbra={0.9}
         decay={0}
         distance={0}
-        shadow-mapSize-width={compactWebGL() ? 1024 : 2048}
-        shadow-mapSize-height={compactWebGL() ? 1024 : 2048}
+        shadow-mapSize-width={shadowResolution}
+        shadow-mapSize-height={shadowResolution}
         shadow-bias={-0.0004}
         shadow-normalBias={0.03}
         shadow-camera-near={10}
         shadow-camera-far={150}
       />
       <directionalLight
-        position={[BUILDING_X + 24, 10, -16]}
-        color="#7f9cc4"
-        intensity={(darkMode ? 0.45 : 0.6) * light}
+        position={[BUILDING_X + 24, 12, -16]}
+        color="#878787"
+        intensity={(darkMode ? 0.8 : 0.7) * light}
+      />
+      <directionalLight
+        position={[BUILDING_X - 8, 22, -30]}
+        color="#F56E0F"
+        intensity={(darkMode ? 0.24 : 0.12) * light}
       />
       {captureFrame === undefined ? (
         <>
@@ -3860,6 +3875,22 @@ export function DestructionLab({
   onControlsReady?: () => void;
 }) {
   const [sceneIndex, setSceneIndex] = useState(2);
+  const [mobileVisualQuality, setMobileVisualQuality] =
+    useState<MobileVisualQuality>(() => {
+      if (typeof window === "undefined") return "balanced";
+      try {
+        const stored = window.localStorage.getItem("ksv-mobile-3d-quality");
+        if (stored === "low" || stored === "balanced" || stored === "high") return stored;
+      } catch { /* Storage may be blocked. */ }
+      return "balanced";
+    });
+  const [showMobileControls, setShowMobileControls] = useState(false);
+  const [showMobileContract, setShowMobileContract] = useState(false);
+  useEffect(() => {
+    if (!compactWebGL()) return;
+    try { window.localStorage.setItem("ksv-mobile-3d-quality", mobileVisualQuality); }
+    catch { /* Keep the in-memory choice. */ }
+  }, [mobileVisualQuality]);
   const [tool, setTool] = useState<ToolId>("wrecking-ball");
   const [pulse, setPulse] = useState(0);
   const [resetToken, setResetToken] = useState(0);
@@ -4181,7 +4212,10 @@ export function DestructionLab({
       data-state={simulationState}
       id="destruction-demo"
     >
-      <div className="lab-canvas-wrap">
+      <div className="lab-canvas-wrap"
+      data-mobile-controls-open={showMobileControls}
+      data-mobile-contract-open={showMobileContract}
+    >
         <DestructionErrorBoundary
           onError={() => {
             setSimulationState("error");
@@ -4190,15 +4224,16 @@ export function DestructionLab({
         >
           <Canvas
             orthographic
-            shadows="basic"
-            dpr={compactWebGL() ? 1 : [1, 1.4]}
+            key={compactWebGL() ? mobileVisualQuality : "desktop"}
+            shadows={compactWebGL() && mobileVisualQuality !== "low" ? "soft" : "basic"}
+            dpr={compactWebGL() ? mobileVisualPresets[mobileVisualQuality].dpr : [1, 1.4]}
             camera={{
               position: [24, 15, 28],
               zoom: 6.5,
               near: CAMERA_NEAR_CLIP,
               far: 500,
             }}
-            gl={{ antialias: !compactWebGL(), powerPreference: "high-performance" }}
+            gl={{ antialias: compactWebGL() ? mobileVisualPresets[mobileVisualQuality].antialias : true, powerPreference: "high-performance" }}
             onCreated={({ gl }) => {
               canvasRef.current = gl.domElement;
               gl.domElement.dataset.liquidIgnore = "true";
@@ -4227,6 +4262,7 @@ export function DestructionLab({
               customEnvironment={customEnvironment}
               onMeshStatus={updateMeshStatus}
               darkMode={darkMode}
+              shadowResolution={compactWebGL() ? mobileVisualPresets[mobileVisualQuality].shadowMap : 2048}
               timeScale={timeScale}
               paused={paused}
               onFps={setFps}
@@ -4315,6 +4351,29 @@ export function DestructionLab({
               : "Click a part to strike - drag the scene to rotate"}
           </small>
         </LayeredGlassAsset>
+
+        <button
+          className="lab-mobile-toggle lab-mobile-contract-toggle"
+          type="button"
+          aria-expanded={showMobileContract}
+          onClick={() => {
+            setShowMobileContract((open) => !open);
+            setShowMobileControls(false);
+          }}
+        >
+          Contracts {showMobileContract ? "−" : "+"}
+        </button>
+        <button
+          className="lab-mobile-toggle lab-mobile-settings-toggle"
+          type="button"
+          aria-expanded={showMobileControls}
+          onClick={() => {
+            setShowMobileControls((open) => !open);
+            setShowMobileContract(false);
+          }}
+        >
+          Controls + graphics {showMobileControls ? "−" : "+"}
+        </button>
 
         <ContractCard
           contracts={contracts}
@@ -4494,6 +4553,21 @@ export function DestructionLab({
               ))}
             </div>
           </LayeredGlassAsset>
+          <div className="lab-mobile-graphics">
+            <label htmlFor="mobile-visual-quality">Graphics quality</label>
+            <select
+              id="mobile-visual-quality"
+              value={mobileVisualQuality}
+              onChange={(event) =>
+                setMobileVisualQuality(event.target.value as MobileVisualQuality)
+              }
+              aria-label="Mobile graphics quality"
+            >
+              <option value="low">Low · Max FPS</option>
+              <option value="balanced">Balanced · Recommended</option>
+              <option value="high">High · Sharper shadows</option>
+            </select>
+          </div>
         </div>
 
         <LayeredGlassAsset

@@ -5244,3 +5244,6 @@ body {
   --signal: #a7d76b;
   --positive: #a7d76b;
 }
+
+/* MOBILE_POLISH_V3_REACT_STYLE: available only in the embedded phone demo. */
+.lab-mobile-toggle, .lab-mobile-graphics { display: none; }
