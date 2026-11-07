@@ -351,7 +351,7 @@ const mobileVisualPresets = {
   high: { dpr: 1.25, shadowMap: 2048, antialias: true },
 } as const;
 type MobileVisualQuality = keyof typeof mobileVisualPresets;
-const isMobileVisualQuality = (
+export const isMobileVisualQuality = (
   value: string,
 ): value is MobileVisualQuality =>
   value === "low" || value === "balanced" || value === "high";
