@@ -125,9 +125,14 @@
     const additional = themes.filter(t => !featuredThemeIds.has(t.id));
     const markup = list => list.map(t => `<button type="button" class="theme-option ${document.body.dataset.theme===t.id?"current":""}" data-theme-option="${t.id}" aria-pressed="${document.body.dataset.theme===t.id}"><span class="theme-swatch" style="--sw-bg:${t.bg};--sw-accent:${t.accent}"></span>${safe(t.label)} <em>${document.body.dataset.theme===t.id ? "✓" : ""}</em></button>`).join("");
     $("#theme-options").innerHTML = markup(featured);
-    $("#theme-options-more").innerHTML = markup(additional);
+    const more = $("#theme-options-more");
+    if (more) more.innerHTML = markup(additional);
     const current = additional.find(t => t.id === document.body.dataset.theme);
-    $("#theme-extra .theme-extra-status").textContent = current ? `ACTIVE: ${current.label}` : `${additional.length} MORE PALETTES`;
+    const extra = $("#theme-extra");
+    if (extra) {
+      const status = extra.querySelector(".theme-extra-status");
+      if (status) status.textContent = current ? `ACTIVE: ${current.label}` : `${additional.length} MORE PALETTES`;
+    }
   }
   function applyTheme(id){
     if(!themes.some(t=>t.id===id))return;
