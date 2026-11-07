@@ -344,13 +344,9 @@ const compactWebGL = () =>
   typeof window.matchMedia === "function" &&
   window.matchMedia("(pointer:coarse) and (max-width:1100px)").matches;
 
+import { isMobileVisualQuality, mobileVisualPresets, type MobileVisualQuality } from "@/lib/mobileVisualQuality";
+
 // MOBILE_POLISH_V3_QUALITY: mobile-only presets; desktop is left untouched.
-const mobileVisualPresets = {
-  low: { dpr: 0.85, shadowMap: 512, antialias: false },
-  balanced: { dpr: 1.1, shadowMap: 1024, antialias: true },
-  high: { dpr: 1.25, shadowMap: 2048, antialias: true },
-} as const;
-type MobileVisualQuality = keyof typeof mobileVisualPresets;
 
 const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
@@ -3880,7 +3876,7 @@ export function DestructionLab({
       if (typeof window === "undefined") return "balanced";
       try {
         const stored = window.localStorage.getItem("ksv-mobile-3d-quality");
-        if (stored === "low" || stored === "balanced" || stored === "high") return stored;
+        if (isMobileVisualQuality(stored)) return stored;
       } catch { /* Storage may be blocked. */ }
       return "balanced";
     });
@@ -4558,9 +4554,13 @@ export function DestructionLab({
             <select
               id="mobile-visual-quality"
               value={mobileVisualQuality}
-              onChange={(event) =>
-                setMobileVisualQuality(event.target.value as MobileVisualQuality)
-              }
+              onChange={(event) => {
+                const nextQuality = event.target.value;
+                if (!isMobileVisualQuality(nextQuality)) {
+                  return;
+                }
+                setMobileVisualQuality(nextQuality);
+              }}
               aria-label="Mobile graphics quality"
             >
               <option value="low">Low · Max FPS</option>
