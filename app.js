@@ -123,11 +123,17 @@
   function paintThemeOptions(){
     const featured = themes.filter(t => featuredThemeIds.has(t.id));
     const additional = themes.filter(t => !featuredThemeIds.has(t.id));
-    const markup = list => list.map(t => `<button type="button" class="theme-option ${document.body.dataset.theme===t.id?"current":""}" data-theme-option="${t.id}" aria-pressed="${document.body.dataset.theme===t.id}"><span class="theme-swatch" style="--sw-bg:${t.bg};--sw-accent:${t.accent}"></span>${safe(t.label)} <em>${document.body.dataset.theme===t.id ? "✓" : ""}</em></button>`).join("");
-    $("#theme-options").innerHTML = markup(featured);
-    $("#theme-options-more").innerHTML = markup(additional);
-    const current = additional.find(t => t.id === document.body.dataset.theme);
-    $("#theme-extra .theme-extra-status").textContent = current ? `ACTIVE: ${current.label}` : `${additional.length} MORE PALETTES`;
+    const activeTheme = document.body?.dataset?.theme;
+    const markup = list => list.map(t => `<button type="button" class="theme-option ${activeTheme===t.id?"current":""}" data-theme-option="${t.id}" aria-pressed="${activeTheme===t.id}"><span class="theme-swatch" style="--sw-bg:${t.bg};--sw-accent:${t.accent}"></span>${safe(t.label)} <em>${activeTheme===t.id ? "✓" : ""}</em></button>`).join("");
+    const options = $("#theme-options");
+    if (options) options.innerHTML = markup(featured);
+    const moreOptions = $("#theme-options-more");
+    if (moreOptions) moreOptions.innerHTML = markup(additional);
+    const extraStatus = $("#theme-extra .theme-extra-status");
+    if (extraStatus) {
+      const current = additional.find(t => t.id === activeTheme);
+      extraStatus.textContent = current ? `ACTIVE: ${current.label}` : `${additional.length} MORE PALETTES`;
+    }
   }
   function applyTheme(id){
     if(!themes.some(t=>t.id===id))return;
