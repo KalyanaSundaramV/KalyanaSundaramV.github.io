@@ -89,6 +89,7 @@ async function loadDestructionModule() {
 test("keeps the portfolio content and adds the interactive destruction experience", async () => {
   const [
     app,
+    legacyApp,
     lab,
     destruction,
     html,
@@ -109,6 +110,7 @@ test("keeps the portfolio content and adds the interactive destruction experienc
     ownerAssets,
   ] = await Promise.all([
     readFile(new URL("src/App.tsx", root), "utf8"),
+    readFile(new URL("app.js", root), "utf8"),
     readFile(new URL("src/components/DestructionLab.tsx", root), "utf8"),
     readFile(new URL("src/lib/destruction.ts", root), "utf8"),
     readFile(new URL("index.html", root), "utf8"),
@@ -136,6 +138,9 @@ test("keeps the portfolio content and adds the interactive destruction experienc
   assert.doesNotMatch(app, /Offerings/);
   assert.match(app, /Selected work/);
   assert.match(app, /Tools I built/);
+  assert.match(legacyApp, /const more = \$\("#theme-options-more"\);/);
+  assert.match(legacyApp, /const extra = \$\("#theme-extra"\);/);
+  assert.match(legacyApp, /querySelector\("\.theme-extra-status"\)/);
   assert.match(app, /asset="nav_bar"/);
   assert.match(app, /asset="hero_demo_frame"/);
   assert.match(app, /DEMO_PLAY_REQUEST_EVENT/);
