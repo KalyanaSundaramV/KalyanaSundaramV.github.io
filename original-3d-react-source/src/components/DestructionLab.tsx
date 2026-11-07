@@ -351,6 +351,10 @@ const mobileVisualPresets = {
   high: { dpr: 1.25, shadowMap: 2048, antialias: true },
 } as const;
 type MobileVisualQuality = keyof typeof mobileVisualPresets;
+const isMobileVisualQuality = (
+  value: string,
+): value is MobileVisualQuality =>
+  value === "low" || value === "balanced" || value === "high";
 
 const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
@@ -3880,7 +3884,7 @@ export function DestructionLab({
       if (typeof window === "undefined") return "balanced";
       try {
         const stored = window.localStorage.getItem("ksv-mobile-3d-quality");
-        if (stored === "low" || stored === "balanced" || stored === "high") return stored;
+        if (stored && isMobileVisualQuality(stored)) return stored;
       } catch { /* Storage may be blocked. */ }
       return "balanced";
     });
@@ -4558,9 +4562,12 @@ export function DestructionLab({
             <select
               id="mobile-visual-quality"
               value={mobileVisualQuality}
-              onChange={(event) =>
-                setMobileVisualQuality(event.target.value as MobileVisualQuality)
-              }
+              onChange={(event) => {
+                const nextValue = event.target.value;
+                if (isMobileVisualQuality(nextValue)) {
+                  setMobileVisualQuality(nextValue);
+                }
+              }}
               aria-label="Mobile graphics quality"
             >
               <option value="low">Low · Max FPS</option>
