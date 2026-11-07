@@ -120,8 +120,9 @@ function initLiquidPointer(){
  let last=0,frameCount=0;
  function draw(t){
    requestAnimationFrame(draw);
-   if(document.hidden)return;
-   const dt=last?Math.min(36,t-last):16;last=t; if((frameCount%12)===0)applyAccent();
+    // MOBILE_POLISH_V3_FX: no background pointer draws during the mobile demo.
+    if(document.hidden || document.body.classList.contains("mobile-demo-focus")) { last=t; return; }
+    const dt=last?Math.min(36,t-last):16;last=t; if((frameCount%12)===0)applyAccent();
    const step=dt/16.66;frameCount++;
    const resting=t*.001,fluidity=.05+moving*.2;
    x+=(tx-x)*clamp(.3*step);

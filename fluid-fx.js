@@ -511,8 +511,9 @@ window.LiquidPointer={
   }
   function animate(now){
    requestAnimationFrame(animate);
-   if(document.hidden)return;
-   const dt=clamp((now-last)/16.67,.25,2);last=now;
+    // MOBILE_POLISH_V3_FX: preserve loop, skip painting while phone demo is active.
+    if(document.hidden || document.body.classList.contains("mobile-demo-focus")) { last=now; return; }
+    const dt=clamp((now-last)/16.67,.25,2);last=now;
    if(!visible && !droplets.length){ctx.clearRect(0,0,innerWidth,innerHeight);return}
    frames++;if(frames%11===0)refresh(now);
    readColor();ctx.clearRect(0,0,innerWidth,innerHeight);

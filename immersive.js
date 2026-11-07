@@ -61,7 +61,8 @@
     function frame(now){
       if(!on||!loader.isConnected||loader.classList.contains("hiding"))return;
       requestAnimationFrame(frame);
-      if(document.hidden||now-last<25)return;
+      // MOBILE_POLISH_V3_FX: animation resumes automatically on demo close.
+      if(document.hidden || document.body.classList.contains("mobile-demo-focus") || now-last<25)return;
       last=now;resize();
       const t=now*.001,accent=color();
       ctx.clearRect(0,0,w,h);
@@ -255,7 +256,7 @@
   function frame(now){
     if(!active || !loader.isConnected || loader.classList.contains("hiding"))return;
     requestAnimationFrame(frame);
-    if(document.hidden || now-last<25)return;last=now;
+    if(document.hidden || document.body.classList.contains("mobile-demo-focus") || now-last<25)return;last=now;
     resize();
     pointer.x+=(pointer.targetX-pointer.x)*.035;
     pointer.y+=(pointer.targetY-pointer.y)*.035;
